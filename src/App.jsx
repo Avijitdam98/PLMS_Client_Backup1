@@ -22,93 +22,115 @@ import VerifyOtp from "./components/VerifyOtp";
 import ResetPassword from "./components/ResetPassword";
 import Profile from "./components/Profile";
 
+// Import new resource pages
+import InvestorRelations from "./pages/InvestorRelations.jsx";
+import Careers from "./pages/Careers.jsx";
+import NewsEvents from "./pages/NewsEvents.jsx";
+// Add new footer pages
+import Accessibility from "./pages/Accessibility.jsx";
+import Cookies from "./pages/Cookies.jsx";
+import Sitemap from "./pages/Sitemap.jsx";
+import PageTransitionWrapper from "./components/PageTransitionWrapper.jsx";
+
 function App() {
   return (
-    <>
+    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
       <CssBaseline />
       <Navbar />
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        
-        {/* Footer Pages */}
-        <Route path="/about" element={<AboutUs />} />
-        <Route path="/services" element={<Services />} />
-        <Route path="/faq" element={<FAQ />} />
-        <Route path="/contact" element={<Contact />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/terms-of-service" element={<TermsOfService />} />
-        
-        {/* Password Recovery Routes */}
-        <Route path="/forgot-password" element={<ForgotPassword />} />
-        <Route path="/verify-otp" element={<VerifyOtp />} />
-        <Route path="/reset-password" element={<ResetPassword />} />
-        
-        {/* Credit Score Check */}
-        <Route path="/credit-score" element={<CreditScoreCheck />} />
-        
-        {/* Protected Routes */}
-        <Route
-          path="/apply-loan"
-          element={
-            <ProtectedRoute roleRequired="USER">
-              <LoanApplication />
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/admin-dashboard"
-          element={
-            <ProtectedRoute roleRequired="ADMIN">
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/user-dashboard"
-          element={
-            <ProtectedRoute roleRequired="USER">
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/documents"
-          element={
-            <ProtectedRoute>
-              <UserDocuments
-                userId={JSON.parse(localStorage.getItem("user") || "{}").id}
-              />
-            </ProtectedRoute>
-          }
-        />
-        
-        <Route
-          path="/profile"
-          element={
-            <ProtectedRoute>
-              <Profile />
-            </ProtectedRoute>
-          }
-        />
-      </Routes>
+      <main style={{ flex: 1 }}>
+        <PageTransitionWrapper>
+          <Routes>
+            {/* Public Routes */}
+            <Route path="/" element={<Home />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            
+            {/* Footer Pages */}
+            <Route path="/about" element={<AboutUs />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/faq" element={<FAQ />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
+            <Route path="/accessibility" element={<Accessibility />} />
+            <Route path="/cookies" element={<Cookies />} />
+            <Route path="/sitemap" element={<Sitemap />} />
+            
+            {/* Resource Pages */}
+            <Route path="/investor-relations" element={<InvestorRelations />} />
+            <Route path="/careers" element={<Careers />} />
+            <Route path="/news-events" element={<NewsEvents />} />
+            
+            {/* Password Recovery Routes */}
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/verify-otp" element={<VerifyOtp />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            
+            {/* Credit Score Check */}
+            <Route path="/credit-score" element={<CreditScoreCheck />} />
+            
+            {/* Protected Routes */}
+            <Route
+              path="/apply-loan"
+              element={
+                <ProtectedRoute roleRequired="USER">
+                  <LoanApplication />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/admin-dashboard"
+              element={
+                <ProtectedRoute roleRequired="ADMIN">
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/user-dashboard"
+              element={
+                <ProtectedRoute roleRequired="USER">
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/documents"
+              element={
+                <ProtectedRoute>
+                  <UserDocuments
+                    userId={JSON.parse(localStorage.getItem("user") || "{}").id}
+                  />
+                </ProtectedRoute>
+              }
+            />
+            
+            <Route
+              path="/profile"
+              element={
+                <ProtectedRoute>
+                  <Profile />
+                </ProtectedRoute>
+              }
+            />
+          </Routes>
+        </PageTransitionWrapper>
+      </main>
       <FooterSection />
       <ToastContainer />
-    </>
+    </div>
   );
 }
 

@@ -1,83 +1,114 @@
-import React from 'react';
-import { Box, Container, Typography, Grid, Card, CardContent, Avatar } from '@mui/material';
-import { styled } from '@mui/material/styles';
-import BusinessIcon from '@mui/icons-material/Business';
-import PeopleIcon from '@mui/icons-material/People';
-import EmojiEventsIcon from '@mui/icons-material/EmojiEvents';
-import TrendingUpIcon from '@mui/icons-material/TrendingUp';
+import BusinessIcon from "@mui/icons-material/Business";
+import EmojiEventsIcon from "@mui/icons-material/EmojiEvents";
+import PeopleIcon from "@mui/icons-material/People";
+import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import {
+  Avatar,
+  Box,
+  Card,
+  CardContent,
+  Container,
+  Grid,
+  Typography,
+} from "@mui/material";
+import { styled } from "@mui/material/styles";
+import React from "react";
 
 const StyledCard = styled(Card)(({ theme }) => ({
-  height: '100%',
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
+  height: "100%",
+  display: "flex",
+  flexDirection: "column",
+  justifyContent: "center",
+  alignItems: "center",
   padding: theme.spacing(3),
-  textAlign: 'center',
-  transition: 'transform 0.3s ease-in-out',
-  '&:hover': {
-    transform: 'translateY(-5px)',
+  textAlign: "center",
+  transition: "transform 0.3s ease-in-out",
+  "&:hover": {
+    transform: "translateY(-5px)",
   },
 }));
 
 const teamMembers = [
   {
-    name: 'John Doe',
-    position: 'CEO',
-    image: 'https://i.pravatar.cc/150?img=1',
+    name: "Avijit",
+
+    image:
+      "https://avatars.githubusercontent.com/u/84221186?s=400&u=a96d86bd5930864c3f1994be6a7909aa51bd447e&v=4",
   },
   {
-    name: 'Jane Smith',
-    position: 'CTO',
-    image: 'https://i.pravatar.cc/150?img=2',
+    name: "Himanshu",
+
+    image:
+      "https://avatars.githubusercontent.com/u/198864095?s=400&u=f904bb92d8431a6d3dab81475e3e44dd4da062fc&v=4",
   },
   {
-    name: 'Mike Johnson',
-    position: 'CFO',
-    image: 'https://i.pravatar.cc/150?img=3',
+    name: "Rahul",
+
+    image:
+      "https://avatars.githubusercontent.com/u/206446477?s=400&u=5a26e8da393412051f97edb1a0cd4120b9cf4471&v=4",
   },
   {
-    name: 'Sarah Williams',
-    position: 'COO',
-    image: 'https://i.pravatar.cc/150?img=4',
+    name: "Suman",
+
+    image:
+      "https://avatars.githubusercontent.com/u/182713931?s=400&u=018cb83bbe18030001933bfbab71449ba0009fff&v=4",
+  },
+  {
+    name: "Aryan",
+    image:
+      "https://avatars.githubusercontent.com/u/187367139?s=400&u=2e90fd35211770138b63950609ddb75580ed604f&v=4",
+  },
+   {
+    name: "Chaitanya",
+    image:
+      "https://avatars.githubusercontent.com/u/187367139?s=400&u=2e90fd35211770138b63950609ddb75580ed604f&v=4",
   },
 ];
 
 const stats = [
   {
     icon: <BusinessIcon sx={{ fontSize: 40 }} />,
-    value: '10+',
-    label: 'Years in Business',
+    value: "10+",
+    label: "Years in Business",
   },
   {
     icon: <PeopleIcon sx={{ fontSize: 40 }} />,
-    value: '1000+',
-    label: 'Happy Clients',
+    value: "1000+",
+    label: "Happy Clients",
   },
   {
     icon: <EmojiEventsIcon sx={{ fontSize: 40 }} />,
-    value: '50+',
-    label: 'Awards Won',
+    value: "50+",
+    label: "Awards Won",
   },
   {
     icon: <TrendingUpIcon sx={{ fontSize: 40 }} />,
-    value: '99%',
-    label: 'Success Rate',
+    value: "99%",
+    label: "Success Rate",
   },
 ];
 
 export default function AboutUs() {
   return (
-    <Box sx={{ py: 8, backgroundColor: '#f5f5f5' }}>
+    <Box sx={{ py: 8, backgroundColor: "#f5f5f5" }}>
       <Container maxWidth="lg">
         {/* Hero Section */}
-        <Box sx={{ textAlign: 'center', mb: 8 }}>
-          <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
+        <Box sx={{ textAlign: "center", mb: 8 }}>
+          <Typography
+            variant="h2"
+            component="h1"
+            gutterBottom
+            sx={{ fontWeight: "bold" }}
+          >
             About Us
           </Typography>
-          <Typography variant="h5" color="text.secondary" sx={{ maxWidth: 800, mx: 'auto' }}>
-            We are a leading financial services company dedicated to providing innovative solutions
-            and exceptional service to our clients.
+          <Typography
+            variant="h5"
+            color="text.secondary"
+            sx={{ maxWidth: 800, mx: "auto" }}
+          >
+            We are a leading financial services company dedicated to providing
+            innovative solutions and exceptional service to our clients.
           </Typography>
         </Box>
 
@@ -86,13 +117,18 @@ export default function AboutUs() {
           <Grid item xs={12} md={6}>
             <StyledCard>
               <CardContent>
-                <Typography variant="h4" gutterBottom sx={{ color: 'primary.main' }}>
+                <Typography
+                  variant="h4"
+                  gutterBottom
+                  sx={{ color: "primary.main" }}
+                >
                   Our Mission
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  To empower individuals and businesses with accessible financial solutions,
-                  helping them achieve their goals and secure their future through innovative
-                  technology and personalized service.
+                  To empower individuals and businesses with accessible
+                  financial solutions, helping them achieve their goals and
+                  secure their future through innovative technology and
+                  personalized service.
                 </Typography>
               </CardContent>
             </StyledCard>
@@ -100,13 +136,17 @@ export default function AboutUs() {
           <Grid item xs={12} md={6}>
             <StyledCard>
               <CardContent>
-                <Typography variant="h4" gutterBottom sx={{ color: 'primary.main' }}>
+                <Typography
+                  variant="h4"
+                  gutterBottom
+                  sx={{ color: "primary.main" }}
+                >
                   Our Vision
                 </Typography>
                 <Typography variant="body1" color="text.secondary">
-                  To be the most trusted and preferred financial partner, recognized for our
-                  commitment to excellence, innovation, and customer satisfaction in the
-                  financial services industry.
+                  To be the most trusted and preferred financial partner,
+                  recognized for our commitment to excellence, innovation, and
+                  customer satisfaction in the financial services industry.
                 </Typography>
               </CardContent>
             </StyledCard>
@@ -123,7 +163,10 @@ export default function AboutUs() {
               <Grid item xs={12} sm={6} md={3} key={index}>
                 <StyledCard>
                   {stat.icon}
-                  <Typography variant="h4" sx={{ mt: 2, mb: 1, fontWeight: 'bold' }}>
+                  <Typography
+                    variant="h4"
+                    sx={{ mt: 2, mb: 1, fontWeight: "bold" }}
+                  >
                     {stat.value}
                   </Typography>
                   <Typography variant="body1" color="text.secondary">
@@ -162,4 +205,4 @@ export default function AboutUs() {
       </Container>
     </Box>
   );
-} 
+}

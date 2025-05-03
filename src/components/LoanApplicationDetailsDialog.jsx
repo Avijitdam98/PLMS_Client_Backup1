@@ -119,22 +119,7 @@ const LoanApplicationDetailsDialog = ({ open, onClose, application }) => {
         </Button>
         {application.status === "PENDING" && (
           <>
-            <Button
-              variant="contained"
-              color="success"
-              onClick={() => console.log("Approve")}
-              sx={{ minWidth: 100 }}
-            >
-              Approve
-            </Button>
-            <Button
-              variant="contained"
-              color="error"
-              onClick={() => console.log("Reject")} 
-              sx={{ minWidth: 100 }}
-            >
-              Reject
-            </Button>
+
           </>
         )}
       </DialogActions>

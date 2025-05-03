@@ -122,26 +122,56 @@ function Dashboard() {
   };
 
   const getMonthlyData = () => {
+    if (!applications.length) {
+      console.log("No applications available for monthly data.");
+      return [];
+    }
+
     const monthly = {};
-    applications.forEach((app) => {
-      const date = new Date(app.createdAt || app.applicationDate);
+    applications.forEach((app, index) => {
+      const dateRaw = app.createdAt || app.applicationDate;
+      console.log(`Application ${index + 1}:`, { dateRaw, status: app.status });
+
+      // Use a fallback date if dateRaw is missing or invalid
+      let date;
+      if (!dateRaw) {
+        console.warn(`Application ${index + 1} has no date, using fallback.`);
+        date = new Date(); // Fallback to current date
+      } else {
+        date = new Date(dateRaw);
+        if (isNaN(date.getTime())) {
+          console.warn(
+            `Application ${
+              index + 1
+            } has invalid date: ${dateRaw}, using fallback.`
+          );
+          date = new Date(); // Fallback to current date if invalid
+        }
+      }
+
       const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
         2,
         "0"
       )}`;
-      if (!monthly[key])
+      if (!monthly[key]) {
         monthly[key] = { applications: 0, approved: 0, month: key };
+      }
       monthly[key].applications += 1;
-      if (app.status === "APPROVED" || app.status === "DISBURSED")
+      if (app.status === "APPROVED" || app.status === "DISBURSED") {
         monthly[key].approved += 1;
+      }
     });
-    return Object.values(monthly).sort((a, b) =>
+
+    const result = Object.values(monthly).sort((a, b) =>
       a.month.localeCompare(b.month)
     );
+    console.log("Monthly data:", result);
+    return result;
   };
 
-  const getPurposeData = () => {
-    const purposeSums = applications.reduce((acc, app) => {
+  // Accepts an optional applications array for filtering
+  const getPurposeData = (apps = applications) => {
+    const purposeSums = apps.reduce((acc, app) => {
       acc[app.purpose] = (acc[app.purpose] || 0) + Number(app.loanAmount);
       return acc;
     }, {});
@@ -179,7 +209,9 @@ function Dashboard() {
           ? "http://localhost:8732/api/loans/all"
           : `http://localhost:8732/api/loans/user/${user.id}`;
       const response = await axios.get(endpoint);
-      setApplications(Array.isArray(response.data) ? response.data : []);
+      const data = Array.isArray(response.data) ? response.data : [];
+      console.log("Fetched applications:", data); // Debug log
+      setApplications(data);
       setLoading(false);
     } catch (error) {
       const errorMessage =
@@ -206,7 +238,7 @@ function Dashboard() {
       );
       console.log("Fetched documents:", response.data); // Debug log
       setSelectedDocs(response.data || []);
-    } catch (e) {
+    } catch (_) {
       setSelectedDocs([]);
       toast.error("Failed to load documents");
     } finally {
@@ -299,7 +331,7 @@ function Dashboard() {
         `http://localhost:8732/api/repayments/loan/${applicationId}`
       );
       setSelectedLoanEMIs(response.data || []);
-    } catch (e) {
+    } catch (_) {
       setSelectedLoanEMIs([]);
       toast.error("Failed to load EMI schedule");
     } finally {
@@ -314,8 +346,8 @@ function Dashboard() {
       );
       toast.success("EMI paid successfully!");
       fetchEMIs(applicationId); // Refresh EMI list
-    } catch (e) {
-      toast.error(e.response?.data?.error || "Failed to pay EMI");
+    } catch (_) {
+      toast.error("Failed to pay EMI");
     }
   };
 
@@ -407,10 +439,11 @@ function Dashboard() {
   return (
     <Box
       sx={{
-        minHeight: '100vh',
-        backgroundColor: theme.palette.mode === 'dark'
-          ? theme.palette.background.default
-          : '#f4f7fb',
+        minHeight: "100vh",
+        backgroundColor:
+          theme.palette.mode === "dark"
+            ? theme.palette.background.default
+            : "#f4f7fb",
         py: 4,
       }}
     >
@@ -422,13 +455,15 @@ function Dashboard() {
             p: 3,
             mb: 4,
             borderRadius: 4,
-            background: theme.palette.mode === 'dark'
-              ? 'rgba(19, 47, 76, 0.4)'
-              : 'rgba(255, 255, 255, 0.8)',
-            backdropFilter: 'blur(10px)',
-            border: theme.palette.mode === 'dark'
-              ? '1px solid rgba(255, 255, 255, 0.1)'
-              : '1px solid rgba(255, 255, 255, 0.2)',
+            background:
+              theme.palette.mode === "dark"
+                ? "rgba(19, 47, 76, 0.4)"
+                : "rgba(255, 255, 255, 0.8)",
+            backdropFilter: "blur(10px)",
+            border:
+              theme.palette.mode === "dark"
+                ? "1px solid rgba(255, 255, 255, 0.1)"
+                : "1px solid rgba(255, 255, 255, 0.2)",
           }}
         >
           {/* --- NOTIFICATION BELL --- */}
@@ -453,7 +488,9 @@ function Dashboard() {
                   display: "inline-block",
                 }}
               >
-                {user.role === "ADMIN" ? "Admin Dashboard" : "My Loan Dashboard"}
+                {user.role === "ADMIN"
+                  ? "Admin Dashboard"
+                  : "My Loan Dashboard"}
               </Typography>
               <Typography variant="body1" color="text.secondary">
                 {formattedDate}
@@ -469,7 +506,8 @@ function Dashboard() {
                   my: 4,
                   p: { xs: 2, md: 3 },
                   borderRadius: 4,
-                  background: "linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)",
+                  background:
+                    "linear-gradient(135deg, #f8fafc 0%, #e0e7ef 100%)",
                   boxShadow: "0 8px 32px 0 rgba(31, 38, 135, 0.12)",
                   maxWidth: 600,
                   mx: "auto",
@@ -494,7 +532,11 @@ function Dashboard() {
                   >
                     Enter a User ID to view their full repayment history
                   </Typography>
-                  <Box display="flex" justifyContent="center" alignItems="center">
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                  >
                     <TextField
                       type="number"
                       value={selectedUserId}
@@ -543,6 +585,7 @@ function Dashboard() {
             getStatusData={getStatusData}
             getMonthlyData={getMonthlyData}
             getPurposeData={getPurposeData}
+            userRole={user.role}
           />
 
           {/* --- USER DOCUMENT UPLOAD & VIEW SECTION (as a component) --- */}

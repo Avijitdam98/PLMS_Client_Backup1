@@ -8,8 +8,6 @@ import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import MenuIcon from "@mui/icons-material/Menu";
 import PersonAddRoundedIcon from "@mui/icons-material/PersonAddRounded";
 import PictureAsPdf from "@mui/icons-material/PictureAsPdf";
-import Brightness4Icon from "@mui/icons-material/Brightness4";
-import Brightness7Icon from "@mui/icons-material/Brightness7";
 import {
   AppBar,
   Avatar,
@@ -34,7 +32,6 @@ import { motion as Motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useThemeContext } from "../context/ThemeContext";
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   background: theme.palette.mode === 'dark'
@@ -196,72 +193,6 @@ const getUserInitials = (user) => {
     .toUpperCase();
 };
 
-const ThemeToggleButton = styled(IconButton)(({ theme }) => ({
-  position: 'relative',
-  width: 52,
-  height: 52,
-  borderRadius: '50%',
-  background: theme.palette.mode === 'dark'
-    ? 'linear-gradient(145deg, #1a237e, #0d47a1)'
-    : 'linear-gradient(145deg, #e3f2fd, #bbdefb)',
-  color: theme.palette.mode === 'dark' ? '#fff' : '#1a237e',
-  boxShadow: theme.palette.mode === 'dark'
-    ? '0 4px 15px rgba(0, 0, 0, 0.3)'
-    : '0 4px 15px rgba(0, 0, 0, 0.1)',
-  transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-  overflow: 'hidden',
-  '&::before': {
-    content: '""',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    background: theme.palette.mode === 'dark'
-      ? 'radial-gradient(circle at center, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%)'
-      : 'radial-gradient(circle at center, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 70%)',
-    opacity: 0,
-    transition: 'opacity 0.5s ease',
-  },
-  '&::after': {
-    content: '""',
-    position: 'absolute',
-    top: '-50%',
-    left: '-50%',
-    width: '200%',
-    height: '200%',
-    background: theme.palette.mode === 'dark'
-      ? 'conic-gradient(from 0deg, transparent, rgba(255,255,255,0.1), transparent)'
-      : 'conic-gradient(from 0deg, transparent, rgba(255,255,255,0.5), transparent)',
-    animation: 'rotate 4s linear infinite',
-    opacity: 0,
-    transition: 'opacity 0.5s ease',
-  },
-  '@keyframes rotate': {
-    '0%': {
-      transform: 'rotate(0deg)',
-    },
-    '100%': {
-      transform: 'rotate(360deg)',
-    },
-  },
-  '&:hover': {
-    transform: 'scale(1.1)',
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 8px 25px rgba(0, 0, 0, 0.4)'
-      : '0 8px 25px rgba(0, 0, 0, 0.15)',
-    '&::before': {
-      opacity: 1,
-    },
-    '&::after': {
-      opacity: 1,
-    },
-  },
-  '&:active': {
-    transform: 'scale(0.95)',
-  },
-}));
-
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -270,7 +201,6 @@ const Navbar = () => {
   const theme = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const { mode, toggleTheme } = useThemeContext();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -485,9 +415,30 @@ const Navbar = () => {
               >
                 <MenuIcon />
               </IconButton>
-              <Logo component={Link} to="/">
-                FinTechProLoan
-              </Logo>
+              <Box
+                component={Link}
+                to="/"
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  height: 56,
+                  mr: 3,
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  transition: 'transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s cubic-bezier(0.4,0,0.2,1)',
+                  '&:hover': {
+                    transform: 'scale(1.10)',
+                    boxShadow: '0 6px 32px 0 rgba(0, 198, 251, 0.25)',
+                  },
+                }}
+              >
+                <Box
+                  component="img"
+                  src="/logo.svg"
+                  alt="FinTech Finance"
+                  sx={{ height: 56, filter: 'drop-shadow(0 2px 12px rgba(0, 198, 251, 0.18))' }}
+                />
+              </Box>
             </Box>
 
             <Box sx={{ display: { xs: "none", md: "flex" }, gap: 2 }}>
@@ -505,22 +456,6 @@ const Navbar = () => {
             </Box>
 
             <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-              <ThemeToggleButton
-                onClick={toggleTheme}
-                aria-label="toggle theme"
-                sx={{
-                  ml: 2,
-                  '& .MuiSvgIcon-root': {
-                    fontSize: '1.75rem',
-                    transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
-                    transform: mode === 'dark' ? 'rotate(180deg) scale(1.1)' : 'rotate(0deg) scale(1)',
-                    filter: mode === 'dark' ? 'drop-shadow(0 0 8px rgba(255,255,255,0.3))' : 'none',
-                  },
-                }}
-              >
-                {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-              </ThemeToggleButton>
-
               {isAuthenticated ? (
                 <>
                   <IconButton

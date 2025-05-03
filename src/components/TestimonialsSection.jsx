@@ -9,17 +9,17 @@ import React, { useState } from "react";
 const testimonials = [
   {
     avatar: "https://randomuser.me/api/portraits/men/32.jpg",
-    name: "Anil Kumar",
+    name: "Manoj Hare",
     text: "The loan process was smooth and transparent. Highly recommended!",
   },
   {
     avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-    name: "Priya Sharma",
+    name: "Rohan patil",
     text: "The EMI calculator is transparent and accurate. I planned my finances easily.",
   },
   {
     avatar: "https://randomuser.me/api/portraits/men/14.jpg",
-    name: "Ravi Menon",
+    name: "Harsh Kumar",
     text: "Excellent customer service and support. Truly a modern loan system.",
   },
   {

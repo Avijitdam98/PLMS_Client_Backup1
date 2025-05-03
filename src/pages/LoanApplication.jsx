@@ -290,10 +290,14 @@ function LoanApplication() {
                   variant="outlined"
                   required
                   sx={{
+                    minHeight: 56,
+                    minWidth: 220,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: 3,
                       backgroundColor: "#f8fafc",
                       transition: "all 0.3s ease",
+                      minHeight: 56,
+                      fontSize: '1rem',
                       "&:hover": {
                         backgroundColor: "#edf2ff",
                       },
@@ -316,14 +320,16 @@ function LoanApplication() {
             </Grid>
             <Grid item xs={12} md={6}>
               <Tooltip title="Select your professional occupation" arrow>
-                <FormControl fullWidth required sx={{ borderRadius: 3 }}>
+                <FormControl fullWidth required sx={{ borderRadius: 3, minHeight: 56, minWidth: 220 }}>
                   <InputLabel
                     sx={{
-                      color:
-                        activeField === "profession" ? "#6d28d9" : "#475569",
+                      color: activeField === "profession" ? "#6d28d9" : "#475569",
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
                     }}
                   >
-                    Profession
+                    <Briefcase size={20} style={{ marginRight: 8 }} /> Profession
                   </InputLabel>
                   <Select
                     name="profession"
@@ -332,25 +338,18 @@ function LoanApplication() {
                     onFocus={() => handleFocus("profession")}
                     onBlur={handleBlur}
                     variant="outlined"
-                    startAdornment={
-                      <Briefcase
-                        size={20}
-                        color={
-                          activeField === "profession" ? "#6d28d9" : "#64748b"
-                        }
-                        style={{ marginRight: 12 }}
-                      />
-                    }
                     sx={{
                       borderRadius: 3,
                       backgroundColor: "#f8fafc",
                       transition: "all 0.3s ease",
-                      "&:hover": {
+                      minHeight: 56,
+                      minWidth: 220,
+                      fontSize: '1rem',
+                      '&:hover': {
                         backgroundColor: "#edf2ff",
                       },
-                      "& .MuiSelect-icon": {
-                        color:
-                          activeField === "profession" ? "#6d28d9" : "#64748b",
+                      '& .MuiSelect-icon': {
+                        color: activeField === "profession" ? "#6d28d9" : "#64748b",
                       },
                     }}
                   >
@@ -368,18 +367,18 @@ function LoanApplication() {
       case 1:
         return (
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6}>
-              <Tooltip
-                title="Select the work-related purpose of your professional loan"
-                arrow
-              >
-                <FormControl fullWidth required sx={{ borderRadius: 3 }}>
+            <Grid item xs={12} md={4}>
+              <Tooltip title="Select the work-related purpose of your professional loan" arrow>
+                <FormControl fullWidth required sx={{ borderRadius: 3, minHeight: 56, minWidth: 220 }}>
                   <InputLabel
                     sx={{
                       color: activeField === "purpose" ? "#6d28d9" : "#475569",
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
                     }}
                   >
-                    Loan Purpose
+                    <FileText size={20} style={{ marginRight: 8 }} /> Loan Purpose
                   </InputLabel>
                   <Select
                     name="purpose"
@@ -388,25 +387,18 @@ function LoanApplication() {
                     onFocus={() => handleFocus("purpose")}
                     onBlur={handleBlur}
                     variant="outlined"
-                    startAdornment={
-                      <FileText
-                        size={20}
-                        color={
-                          activeField === "purpose" ? "#6d28d9" : "#64748b"
-                        }
-                        style={{ marginRight: 12 }}
-                      />
-                    }
                     sx={{
                       borderRadius: 3,
                       backgroundColor: "#f8fafc",
                       transition: "all 0.3s ease",
-                      "&:hover": {
+                      minHeight: 56,
+                      minWidth: 220,
+                      fontSize: '1rem',
+                      '&:hover': {
                         backgroundColor: "#edf2ff",
                       },
-                      "& .MuiSelect-icon": {
-                        color:
-                          activeField === "purpose" ? "#6d28d9" : "#64748b",
+                      '& .MuiSelect-icon': {
+                        color: activeField === "purpose" ? "#6d28d9" : "#64748b",
                       },
                     }}
                   >
@@ -419,7 +411,7 @@ function LoanApplication() {
                 </FormControl>
               </Tooltip>
             </Grid>
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <Tooltip title="Enter your PAN card (e.g. ABCDE1234F)" arrow>
                 <TextField
                   fullWidth
@@ -436,10 +428,14 @@ function LoanApplication() {
                   }}
                   required
                   sx={{
+                    minHeight: 56,
+                    minWidth: 220,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: 3,
                       backgroundColor: "#f8fafc",
                       transition: "all 0.3s ease",
+                      minHeight: 56,
+                      fontSize: '1rem',
                       "&:hover": {
                         backgroundColor: "#edf2ff",
                       },
@@ -452,9 +448,7 @@ function LoanApplication() {
                     startAdornment: (
                       <IdentificationCard
                         size={20}
-                        color={
-                          activeField === "panCard" ? "#6d28d9" : "#64748b"
-                        }
+                        color={activeField === "panCard" ? "#6d28d9" : "#64748b"}
                         style={{ marginRight: 12 }}
                       />
                     ),
@@ -492,21 +486,18 @@ function LoanApplication() {
                 </Box>
               )}
             </Grid>
-            <Grid item xs={12} md={6}>
-              <Tooltip
-                title="Select your desired loan tenure (up to 84 months)"
-                arrow
-              >
-                <FormControl fullWidth required sx={{ borderRadius: 3 }}>
+            <Grid item xs={12} md={4}>
+              <Tooltip title="Select your desired loan tenure (up to 84 months)" arrow>
+                <FormControl fullWidth required sx={{ borderRadius: 3, minHeight: 56, minWidth: 220 }}>
                   <InputLabel
                     sx={{
-                      color:
-                        activeField === "tenureInMonths"
-                          ? "#6d28d9"
-                          : "#475569",
+                      color: activeField === "tenureInMonths" ? "#6d28d9" : "#475569",
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1,
                     }}
                   >
-                    Loan Tenure (Months)
+                    <Briefcase size={20} style={{ marginRight: 8 }} /> Loan Tenure (Months)
                   </InputLabel>
                   <Select
                     name="tenureInMonths"
@@ -519,14 +510,14 @@ function LoanApplication() {
                       borderRadius: 3,
                       backgroundColor: "#f8fafc",
                       transition: "all 0.3s ease",
-                      "&:hover": {
+                      minHeight: 56,
+                      minWidth: 220,
+                      fontSize: '1rem',
+                      '&:hover': {
                         backgroundColor: "#edf2ff",
                       },
-                      "& .MuiSelect-icon": {
-                        color:
-                          activeField === "tenureInMonths"
-                            ? "#6d28d9"
-                            : "#64748b",
+                      '& .MuiSelect-icon': {
+                        color: activeField === "tenureInMonths" ? "#6d28d9" : "#64748b",
                       },
                     }}
                   >
@@ -539,11 +530,8 @@ function LoanApplication() {
                 </FormControl>
               </Tooltip>
             </Grid>
-            <Grid item xs={12}>
-              <Tooltip
-                title="Enter the amount you wish to borrow (minimum ₹1,00,000)"
-                arrow
-              >
+            <Grid item xs={12} md={12}>
+              <Tooltip title="Enter the amount you wish to borrow (minimum ₹1,00,000)" arrow>
                 <TextField
                   fullWidth
                   label="Loan Amount (₹)"
@@ -556,10 +544,14 @@ function LoanApplication() {
                   variant="outlined"
                   required
                   sx={{
+                    minHeight: 56,
+                    minWidth: 220,
                     "& .MuiOutlinedInput-root": {
                       borderRadius: 3,
                       backgroundColor: "#f8fafc",
                       transition: "all 0.3s ease",
+                      minHeight: 56,
+                      fontSize: '1rem',
                       "&:hover": {
                         backgroundColor: "#edf2ff",
                       },
@@ -573,9 +565,7 @@ function LoanApplication() {
                     startAdornment: (
                       <CurrencyDollar
                         size={20}
-                        color={
-                          activeField === "loanAmount" ? "#6d28d9" : "#64748b"
-                        }
+                        color={activeField === "loanAmount" ? "#6d28d9" : "#64748b"}
                         style={{ marginRight: 12 }}
                       />
                     ),
@@ -974,11 +964,14 @@ function LoanApplication() {
       sx={{
         minHeight: "100vh",
         background: "linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%)",
-        py: 8,
-        px: 2,
+        py: { xs: 2, md: 8 },
+        px: { xs: 0, md: 2 },
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="md" disableGutters={isMobile}>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -986,12 +979,14 @@ function LoanApplication() {
         >
           <Box
             sx={{
-              background: "rgba(255, 255, 255, 0.95)",
+              background: "rgba(255, 255, 255, 0.98)",
               backdropFilter: "blur(16px)",
-              borderRadius: 4,
-              boxShadow: "0 16px 40px rgba(0,0,0,0.1)",
-              p: { xs: 3, md: 5 },
+              borderRadius: { xs: 3, md: 6 },
+              boxShadow: "0 16px 40px rgba(0,0,0,0.10)",
+              p: { xs: 2, sm: 3, md: 5 },
               border: "1px solid rgba(255, 255, 255, 0.3)",
+              maxWidth: 900,
+              mx: "auto",
             }}
           >
             <Stack
@@ -999,6 +994,7 @@ function LoanApplication() {
               alignItems="center"
               justifyContent="space-between"
               sx={{ mb: 4 }}
+              spacing={2}
             >
               <Stack direction="row" alignItems="center" spacing={2}>
                 <Box
@@ -1012,10 +1008,10 @@ function LoanApplication() {
                     alignItems: "center",
                     justifyContent: "center",
                     color: "white",
-                    boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.18)",
                   }}
                 >
-                  <FileText size={28} weight="fill" />
+                  <FileText size={32} weight="fill" />
                 </Box>
                 <Box>
                   <Typography
@@ -1026,6 +1022,7 @@ function LoanApplication() {
                         "linear-gradient(90deg, #6d28d9 0%, #4c1d95 100%)",
                       WebkitBackgroundClip: "text",
                       WebkitTextFillColor: "transparent",
+                      fontSize: { xs: "1.5rem", sm: "2.2rem" },
                     }}
                   >
                     Professional Loan Application
@@ -1040,12 +1037,14 @@ function LoanApplication() {
                   onClick={() => setShowDetails(!showDetails)}
                   sx={{
                     color: "#6d28d9",
-                    "&:hover": {
-                      backgroundColor: "rgba(109, 40, 217, 0.1)",
+                    background: 'rgba(109, 40, 217, 0.08)',
+                    borderRadius: 2,
+                    '&:hover': {
+                      backgroundColor: "rgba(109, 40, 217, 0.18)",
                     },
                   }}
                 >
-                  <Question size={24} />
+                  <Question size={26} />
                 </IconButton>
               </Tooltip>
             </Stack>
@@ -1064,8 +1063,8 @@ function LoanApplication() {
                       borderRadius: 3,
                       background:
                         "linear-gradient(135deg, #f8fafc 0%, #edf2ff 100%)",
-                      boxShadow: "0 4px 16px rgba(0,0,0,0.1)",
-                      border: "1px solid rgba(109, 40, 217, 0.2)",
+                      boxShadow: "0 4px 16px rgba(0,0,0,0.08)",
+                      border: "1px solid rgba(109, 40, 217, 0.13)",
                     }}
                   >
                     <CardContent>
@@ -1092,20 +1091,19 @@ function LoanApplication() {
               alternativeLabel
               sx={{
                 mb: 4,
-                "& .MuiStepLabel-label": {
-                  fontWeight: 600,
-                  color:
-                    step >= steps.indexOf(steps[step]) ? "#6d28d9" : "#64748b",
-                  fontSize: "0.9rem",
+                '& .MuiStepLabel-label': {
+                  fontWeight: 700,
+                  color: step >= steps.indexOf(steps[step]) ? '#6d28d9' : '#64748b',
+                  fontSize: { xs: '0.85rem', sm: '1rem' },
                 },
-                "& .MuiStepIcon-root": {
-                  color: "#e0e7ff",
-                  "&.Mui-active": {
-                    color: "#6d28d9",
-                    boxShadow: "0 2px 8px rgba(109, 40, 217, 0.3)",
+                '& .MuiStepIcon-root': {
+                  color: '#e0e7ff',
+                  '&.Mui-active': {
+                    color: '#6d28d9',
+                    boxShadow: '0 2px 8px rgba(109, 40, 217, 0.18)',
                   },
-                  "&.Mui-completed": {
-                    color: "#22c55e",
+                  '&.Mui-completed': {
+                    color: '#22c55e',
                   },
                 },
               }}
@@ -1163,8 +1161,10 @@ function LoanApplication() {
                 sx={{
                   mt: 4,
                   display: "flex",
+                  flexDirection: { xs: 'column', sm: 'row' },
                   justifyContent: "space-between",
-                  alignItems: "center",
+                  alignItems: { xs: 'stretch', sm: 'center' },
+                  gap: 2,
                 }}
               >
                 {step > 0 && (
@@ -1176,11 +1176,12 @@ function LoanApplication() {
                       borderRadius: 3,
                       borderColor: "#6d28d9",
                       color: "#6d28d9",
-                      fontWeight: 600,
+                      fontWeight: 700,
                       px: 3,
                       py: 1,
-                      "&:hover": {
-                        backgroundColor: "rgba(109, 40, 217, 0.1)",
+                      minWidth: 120,
+                      '&:hover': {
+                        backgroundColor: "rgba(109, 40, 217, 0.08)",
                         borderColor: "#5b21b6",
                       },
                     }}
@@ -1197,14 +1198,15 @@ function LoanApplication() {
                       borderRadius: 3,
                       background:
                         "linear-gradient(90deg, #6d28d9 0%, #4c1d95 100%)",
-                      fontWeight: 600,
+                      fontWeight: 700,
                       px: 3,
                       py: 1,
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                      "&:hover": {
+                      minWidth: 120,
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.13)",
+                      '&:hover': {
                         background:
                           "linear-gradient(90deg, #5b21b6 0%, #3b0764 100%)",
-                        boxShadow: "0 6px 16px rgba(0,0,0,0.3)",
+                        boxShadow: "0 6px 16px rgba(0,0,0,0.18)",
                       },
                     }}
                   >
@@ -1220,14 +1222,15 @@ function LoanApplication() {
                       borderRadius: 3,
                       background:
                         "linear-gradient(90deg, #6d28d9 0%, #4c1d95 100%)",
-                      fontWeight: 600,
+                      fontWeight: 700,
                       px: 3,
                       py: 1,
-                      boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                      "&:hover": {
+                      minWidth: 160,
+                      boxShadow: "0 4px 12px rgba(0,0,0,0.13)",
+                      '&:hover': {
                         background:
                           "linear-gradient(90deg, #5b21b6 0%, #3b0764 100%)",
-                        boxShadow: "0 6px 16px rgba(0,0,0,0.3)",
+                        boxShadow: "0 6px 16px rgba(0,0,0,0.18)",
                       },
                     }}
                   >
@@ -1251,7 +1254,7 @@ function LoanApplication() {
                   sx={{
                     mt: 2,
                     borderRadius: 3,
-                    backgroundColor: "rgba(109, 40, 217, 0.1)",
+                    backgroundColor: "rgba(109, 40, 217, 0.08)",
                     "& .MuiLinearProgress-bar": {
                       backgroundColor: "#6d28d9",
                     },

@@ -104,49 +104,6 @@ export default function ContactUs() {
           ))}
         </Grid>
 
-        {/* Contact Form */}
-        <Box sx={{ maxWidth: 800, mx: "auto" }}>
-          <Typography variant="h4" align="center" gutterBottom sx={{ mb: 4 }}>
-            Send Us a Message
-          </Typography>
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={6}>
-              <TextField fullWidth label="Name" variant="outlined" required />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                fullWidth
-                label="Email"
-                variant="outlined"
-                required
-                type="email"
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Subject"
-                variant="outlined"
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Message"
-                variant="outlined"
-                multiline
-                rows={4}
-                required
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button variant="contained" size="large" fullWidth sx={{ py: 2 }}>
-                Send Message
-              </Button>
-            </Grid>
-          </Grid>
-        </Box>
 
         {/* Map Section */}
         <Box sx={{ mt: 8 }}>

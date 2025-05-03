@@ -27,6 +27,10 @@ import {
   Stack,
   TextField,
   Typography,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import axios from "axios";
 import { AnimatePresence, motion } from "framer-motion";
@@ -78,7 +82,8 @@ const paymentMethods = [
   },
 ];
 
-const EmiDialog = ({ open, onClose, emiLoading, selectedLoanEMIs }) => {
+const EmiDialog = ({ open, onClose, emiLoading, selectedLoanEMIs, paymentMode = "all" }) => {
+  const [currentMode, setCurrentMode] = useState(paymentMode); // Track the selected mode
   const [selectedEMIId, setSelectedEMIId] = useState(null);
   const [selectedMethod, setSelectedMethod] = useState("");
   const [selectedBank, setSelectedBank] = useState("");
@@ -104,7 +109,20 @@ const EmiDialog = ({ open, onClose, emiLoading, selectedLoanEMIs }) => {
   const [failureReason, setFailureReason] = useState("");
   const theme = useTheme();
 
-  const selectedEMI = selectedLoanEMIs.find((emi) => emi.id === selectedEMIId);
+  // Filter EMIs based on the current mode
+  const getDisplayEMIs = () => {
+    if (currentMode === "sequential") {
+      // Find the first pending EMI
+      const firstPendingEMI = selectedLoanEMIs.find(
+        (emi) => emi.status !== "PAID" && paidEmiData[emi.id]?.status !== "PAID"
+      );
+      return firstPendingEMI ? [firstPendingEMI] : [];
+    }
+    return selectedLoanEMIs;
+  };
+
+  const displayEMIs = getDisplayEMIs();
+  const selectedEMI = displayEMIs.find((emi) => emi.id === selectedEMIId);
 
   // Reset payment flow when dialog closes
   useEffect(() => {
@@ -112,6 +130,13 @@ const EmiDialog = ({ open, onClose, emiLoading, selectedLoanEMIs }) => {
       resetPaymentFlow();
     }
   }, [open]);
+
+  // Reset mode when dialog opens
+  useEffect(() => {
+    if (open) {
+      setCurrentMode(paymentMode);
+    }
+  }, [open, paymentMode]);
 
   // Countdown timer for success and failure screens
   useEffect(() => {
@@ -317,17 +342,33 @@ const EmiDialog = ({ open, onClose, emiLoading, selectedLoanEMIs }) => {
       }}
     >
       <DialogTitle>
-        <Typography
-          variant="h5"
-          sx={{
-            fontWeight: 700,
-            color: theme.palette.mode === 'dark'
-              ? theme.palette.primary.light
-              : theme.palette.primary.main,
-          }}
-        >
-          EMI Details
-        </Typography>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <Typography
+            variant="h5"
+            sx={{
+              fontWeight: 700,
+              color: theme.palette.mode === 'dark'
+                ? theme.palette.primary.light
+                : theme.palette.primary.main,
+            }}
+          >
+            EMI Details
+          </Typography>
+          <FormControl sx={{ minWidth: 150 }} size="small">
+            <InputLabel>Payment Mode</InputLabel>
+            <Select
+              value={currentMode}
+              onChange={(e) => {
+                setCurrentMode(e.target.value);
+                setPaymentStep("list"); // Reset to list view when mode changes
+              }}
+              label="Payment Mode"
+            >
+              <MenuItem value="all">Pay Any EMI</MenuItem>
+              <MenuItem value="sequential">Pay One by One</MenuItem>
+            </Select>
+          </FormControl>
+        </Box>
       </DialogTitle>
 
       <DialogContent dividers sx={{ p: 0, minHeight: 400 }}>
@@ -342,9 +383,11 @@ const EmiDialog = ({ open, onClose, emiLoading, selectedLoanEMIs }) => {
           >
             <CircularProgress />
           </Box>
-        ) : paymentStep === "list" && selectedLoanEMIs.length === 0 ? (
+        ) : displayEMIs.length === 0 ? (
           <Box sx={{ p: 3, textAlign: "center" }}>
-            <Typography variant="body1">No pending EMIs found</Typography>
+            <Typography variant="body1">
+              {currentMode === "sequential" ? "All EMIs paid" : "No pending EMIs found"}
+            </Typography>
           </Box>
         ) : (
           <AnimatePresence mode="wait">
@@ -361,9 +404,9 @@ const EmiDialog = ({ open, onClose, emiLoading, selectedLoanEMIs }) => {
                     variant="subtitle1"
                     sx={{ mb: 2, fontWeight: 600 }}
                   >
-                    Upcoming Payments
+                    {currentMode === "sequential" ? "Next EMI to Pay" : "Upcoming Payments"}
                   </Typography>
-                  {selectedLoanEMIs.map((emi) => {
+                  {displayEMIs.map((emi) => {
                     const localData = paidEmiData[emi.id];
                     const isPaid =
                       emi.status === "PAID" || localData?.status === "PAID";
@@ -1109,7 +1152,7 @@ const EmiDialog = ({ open, onClose, emiLoading, selectedLoanEMIs }) => {
       </DialogActions>
 
       <Backdrop
-        open={paymentStep === "processing"}
+        open={processing}
         sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
       >
         <CircularProgress color="inherit" />

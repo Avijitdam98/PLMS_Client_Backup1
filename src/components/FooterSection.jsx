@@ -195,15 +195,29 @@ const quickLinks = [
 const resourceLinks = [
   {
     text: "Investor Relations",
-    url: "https://www.FinTechfinance.in/investor-relations",
+    url: "/investor-relations",
+    isExternal: false
   },
-  { text: "Careers", url: "https://www.FinTechfinance.in/careers" },
-  { text: "News & Events", url: "https://www.FinTechfinance.in/news" },
+  { 
+    text: "Careers", 
+    url: "/careers",
+    isExternal: false
+  },
+  { 
+    text: "News & Events", 
+    url: "/news-events",
+    isExternal: false
+  },
   {
     text: "Privacy Policy",
-    url: "https://www.FinTechfinance.in/privacy-policy",
+    url: "/privacy-policy",
+    isExternal: false
   },
-  { text: "Terms of Service", url: "https://www.FinTechfinance.in/terms" },
+  { 
+    text: "Terms of Service", 
+    url: "/terms-of-service",
+    isExternal: false
+  },
 ];
 
 export default function FooterSection() {
@@ -221,6 +235,10 @@ export default function FooterSection() {
         setSubscribed(false);
       }, 3000);
     }
+  };
+
+  const handleNavigation = () => {
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -403,7 +421,7 @@ export default function FooterSection() {
                 >
                   <Box
                     component="img"
-                    src="/logo.png" // Replace with your actual logo path
+                    src="/logo.svg"
                     alt="FinTech Finance"
                     sx={{
                       height: 40,
@@ -495,7 +513,9 @@ export default function FooterSection() {
                     key={idx}
                     component={Link}
                     to={link.path}
+                    onClick={handleNavigation}
                     underline="none"
+                    sx={{ display: 'block' }}
                   >
                     {link.name}
                   </GlowingLink>
@@ -527,8 +547,9 @@ export default function FooterSection() {
                 {resourceLinks.map((link, idx) => (
                   <GlowingLink
                     key={idx}
-                    href={link.url}
-                    target="_blank"
+                    component={Link}
+                    to={link.url}
+                    onClick={handleNavigation}
                     underline="none"
                   >
                     {link.text}
@@ -677,13 +698,13 @@ export default function FooterSection() {
           </Typography>
 
           <Stack direction="row" spacing={3}>
-            <GlowingLink href="#" underline="none" sx={{ fontSize: "0.9rem" }}>
+            <GlowingLink component={Link} to="/accessibility" underline="none" sx={{ fontSize: "0.9rem" }}>
               Accessibility
             </GlowingLink>
-            <GlowingLink href="#" underline="none" sx={{ fontSize: "0.9rem" }}>
+            <GlowingLink component={Link} to="/cookies" underline="none" sx={{ fontSize: "0.9rem" }}>
               Cookies
             </GlowingLink>
-            <GlowingLink href="#" underline="none" sx={{ fontSize: "0.9rem" }}>
+            <GlowingLink component={Link} to="/sitemap" underline="none" sx={{ fontSize: "0.9rem" }}>
               Sitemap
             </GlowingLink>
           </Stack>
@@ -692,4 +713,3 @@ export default function FooterSection() {
     </Box>
   );
 }
-

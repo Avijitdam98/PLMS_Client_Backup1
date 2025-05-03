@@ -26,10 +26,12 @@ import {
   Tooltip,
   XAxis,
   YAxis,
+  BarChart,
 } from "recharts";
+import PropTypes from "prop-types";
 
 // Status Card Styles
-const statCardSx = (color, theme) => ({
+const statCardSx = (color) => ({
   p: 2,
   borderRadius: 3,
   background: alpha(color, 0.07),
@@ -42,7 +44,6 @@ const statCardSx = (color, theme) => ({
 
 const ChartsSection = ({
   applications,
-  theme,
   getStatusData,
   getMonthlyData,
   getPurposeData,
@@ -50,7 +51,7 @@ const ChartsSection = ({
   userName, // optional, for user greeting
 }) => {
   const muiTheme = useTheme();
-  const chartTheme = theme || muiTheme;
+  const chartTheme = muiTheme;
 
   // Status counts
   const statusData = getStatusData();
@@ -63,17 +64,24 @@ const ChartsSection = ({
   const rejected = statusData.find((s) => s.name === "Rejected")?.value || 0;
   const approvalRate = total ? Math.round((totalApproved / total) * 100) : 0;
 
-  // Calculate total loan amount
-  const totalLoanAmount = applications.reduce(
+  // Calculate total loan amount (only APPROVED or DISBURSED)
+  const approvedApplications = applications.filter(
+    (app) => app.status === "APPROVED" || app.status === "DISBURSED"
+  );
+  const totalLoanAmount = approvedApplications.reduce(
     (sum, app) => sum + Number(app.loanAmount || 0),
     0
   );
 
-  // Calculate average loan amount
-  const averageLoanAmount = total ? Math.round(totalLoanAmount / total) : 0;
+  // Calculate average loan amount (only APPROVED or DISBURSED)
+  const averageLoanAmount = approvedApplications.length
+    ? Math.round(totalLoanAmount / approvedApplications.length)
+    : 0;
 
-  // Admin-specific: Top 3 Loan Purposes with percentages
-  const topPurposes = getPurposeData()
+  // Admin-specific: Top 3 Loan Purposes with percentages (only APPROVED or DISBURSED)
+  const topPurposes = getPurposeData(
+    approvedApplications
+  )
     .sort((a, b) => b.amount - a.amount)
     .slice(0, 3)
     .map((purpose) => ({
@@ -83,12 +91,16 @@ const ChartsSection = ({
 
   // User-specific: Personalized greeting and loan summary
   const greeting = userName ? `Welcome, ${userName}!` : "Welcome!";
-  const userLoanSummary = {
-    totalAmount: totalLoanAmount,
-    averageAmount: averageLoanAmount,
-    approvalRate,
-    totalApplications: total,
-  };
+
+  // Fallback data for monthly trends if no data is available
+  const monthlyData = getMonthlyData();
+  const fallbackMonthlyData = monthlyData.length === 0 ? [
+    { month: "2025-01", applications: 0, approved: 0 },
+    { month: "2025-02", applications: 0, approved: 0 },
+    { month: "2025-03", applications: 0, approved: 0 },
+    { month: "2025-04", applications: 0, approved: 0 },
+    { month: "2025-05", applications: 0, approved: 0 },
+  ] : monthlyData;
 
   return (
     <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -99,7 +111,7 @@ const ChartsSection = ({
           <Grid item xs={12} md={3}>
             <Stack spacing={2}>
               <Paper
-                sx={statCardSx(chartTheme.palette.success.main, chartTheme)}
+                sx={statCardSx(chartTheme.palette.success.main)}
               >
                 <CheckCircleIcon color="success" fontSize="large" />
                 <Box>
@@ -115,7 +127,7 @@ const ChartsSection = ({
                 </Box>
               </Paper>
               <Paper
-                sx={statCardSx(chartTheme.palette.primary.main, chartTheme)}
+                sx={statCardSx(chartTheme.palette.primary.main)}
               >
                 <AttachMoneyIcon color="primary" fontSize="large" />
                 <Box>
@@ -131,7 +143,7 @@ const ChartsSection = ({
                 </Box>
               </Paper>
               <Paper
-                sx={statCardSx(chartTheme.palette.warning.main, chartTheme)}
+                sx={statCardSx(chartTheme.palette.warning.main)}
               >
                 <PendingIcon color="warning" fontSize="large" />
                 <Box>
@@ -146,7 +158,7 @@ const ChartsSection = ({
                   </Typography>
                 </Box>
               </Paper>
-              <Paper sx={statCardSx(chartTheme.palette.error.main, chartTheme)}>
+              <Paper sx={statCardSx(chartTheme.palette.error.main)}>
                 <CancelIcon color="error" fontSize="large" />
                 <Box>
                   <Typography variant="subtitle2" fontWeight={600}>
@@ -162,7 +174,7 @@ const ChartsSection = ({
               </Paper>
             </Stack>
           </Grid>
-          {/* Monthly Trends Area Chart */}
+          {/* Monthly Trends Bar Chart (was AreaChart) */}
           <Grid item xs={12} md={5}>
             <Paper
               sx={{
@@ -170,23 +182,23 @@ const ChartsSection = ({
                 borderRadius: 4,
                 height: "100%",
                 background:
-                  theme.palette.mode === "dark"
+                  chartTheme.palette.mode === "dark"
                     ? `linear-gradient(135deg, ${alpha(
-                        theme.palette.primary.dark,
+                        chartTheme.palette.primary.dark,
                         0.15
-                      )}, ${alpha(theme.palette.background.paper, 0.95)})`
+                      )}, ${alpha(chartTheme.palette.background.paper, 0.95)})`
                     : `linear-gradient(135deg, ${alpha(
-                        theme.palette.primary.light,
+                        chartTheme.palette.primary.light,
                         0.08
-                      )}, ${alpha(theme.palette.background.paper, 0.95)})`,
+                      )}, ${alpha(chartTheme.palette.background.paper, 0.95)})`,
                 boxShadow:
-                  theme.palette.mode === "dark"
+                  chartTheme.palette.mode === "dark"
                     ? "0 8px 32px 0 rgba(0, 0, 0, 0.3)"
                     : "0 8px 32px 0 rgba(31, 38, 135, 0.10)",
                 transition: "box-shadow 0.3s, transform 0.3s, background 0.3s",
                 "&:hover": {
                   boxShadow:
-                    theme.palette.mode === "dark"
+                    chartTheme.palette.mode === "dark"
                       ? "0 12px 40px 0 rgba(0, 0, 0, 0.4)"
                       : "0 12px 40px 0 rgba(31, 38, 135, 0.18)",
                   transform: "translateY(-4px) scale(1.01)",
@@ -205,66 +217,27 @@ const ChartsSection = ({
                 </Typography>
               </Box>
               <ResponsiveContainer width="100%" height={250}>
-                <AreaChart
-                  data={getMonthlyData()}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke={chartTheme.palette.divider}
-                  />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Area
-                    type="monotone"
-                    dataKey="applications"
-                    stackId="1"
-                    stroke={chartTheme.palette.primary.main}
-                    fill={`url(#colorApps)`}
-                    isAnimationActive
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="approved"
-                    stackId="2"
-                    stroke={chartTheme.palette.success.main}
-                    fill={`url(#colorApproved)`}
-                    isAnimationActive
-                  />
-                  <defs>
-                    <linearGradient id="colorApps" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="5%"
-                        stopColor={chartTheme.palette.primary.light}
-                        stopOpacity={0.8}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor={chartTheme.palette.primary.light}
-                        stopOpacity={0.1}
-                      />
-                    </linearGradient>
-                    <linearGradient
-                      id="colorApproved"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor={chartTheme.palette.success.light}
-                        stopOpacity={0.8}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor={chartTheme.palette.success.light}
-                        stopOpacity={0.1}
-                      />
-                    </linearGradient>
-                  </defs>
-                </AreaChart>
+                {monthlyData.length === 0 ? (
+                  <BarChart data={fallbackMonthlyData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.palette.divider} />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="applications" name="Applications" fill={chartTheme.palette.primary.main} />
+                    <Bar dataKey="approved" name="Approved" fill={chartTheme.palette.success.main} />
+                  </BarChart>
+                ) : (
+                  <BarChart data={monthlyData} margin={{ top: 10, right: 30, left: 0, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={chartTheme.palette.divider} />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="applications" name="Applications" fill={chartTheme.palette.primary.main} />
+                    <Bar dataKey="approved" name="Approved" fill={chartTheme.palette.success.main} />
+                  </BarChart>
+                )}
               </ResponsiveContainer>
             </Paper>
           </Grid>
@@ -276,23 +249,23 @@ const ChartsSection = ({
                 borderRadius: 4,
                 height: "100%",
                 background:
-                  theme.palette.mode === "dark"
+                  chartTheme.palette.mode === "dark"
                     ? `linear-gradient(135deg, ${alpha(
-                        theme.palette.primary.dark,
+                        chartTheme.palette.primary.dark,
                         0.15
-                      )}, ${alpha(theme.palette.background.paper, 0.95)})`
+                      )}, ${alpha(chartTheme.palette.background.paper, 0.95)})`
                     : `linear-gradient(135deg, ${alpha(
-                        theme.palette.primary.light,
+                        chartTheme.palette.primary.light,
                         0.08
-                      )}, ${alpha(theme.palette.background.paper, 0.95)})`,
+                      )}, ${alpha(chartTheme.palette.background.paper, 0.95)})`,
                 boxShadow:
-                  theme.palette.mode === "dark"
+                  chartTheme.palette.mode === "dark"
                     ? "0 8px 32px 0 rgba(0, 0, 0, 0.3)"
                     : "0 8px 32px 0 rgba(31, 38, 135, 0.10)",
                 transition: "box-shadow 0.3s, transform 0.3s, background 0.3s",
                 "&:hover": {
                   boxShadow:
-                    theme.palette.mode === "dark"
+                    chartTheme.palette.mode === "dark"
                       ? "0 12px 40px 0 rgba(0, 0, 0, 0.4)"
                       : "0 12px 40px 0 rgba(31, 38, 135, 0.18)",
                   transform: "translateY(-4px) scale(1.01)",
@@ -409,7 +382,7 @@ const ChartsSection = ({
                 </Typography>
               </Paper>
               <Paper
-                sx={statCardSx(chartTheme.palette.success.main, chartTheme)}
+                sx={statCardSx(chartTheme.palette.success.main)}
               >
                 <CheckCircleIcon color="success" fontSize="large" />
                 <Box>
@@ -450,23 +423,23 @@ const ChartsSection = ({
                 borderRadius: 4,
                 height: "100%",
                 background:
-                  theme.palette.mode === "dark"
+                  chartTheme.palette.mode === "dark"
                     ? `linear-gradient(135deg, ${alpha(
-                        theme.palette.primary.dark,
+                        chartTheme.palette.primary.dark,
                         0.15
-                      )}, ${alpha(theme.palette.background.paper, 0.95)})`
+                      )}, ${alpha(chartTheme.palette.background.paper, 0.95)})`
                     : `linear-gradient(135deg, ${alpha(
-                        theme.palette.primary.light,
+                        chartTheme.palette.primary.light,
                         0.08
-                      )}, ${alpha(theme.palette.background.paper, 0.95)})`,
+                      )}, ${alpha(chartTheme.palette.background.paper, 0.95)})`,
                 boxShadow:
-                  theme.palette.mode === "dark"
+                  chartTheme.palette.mode === "dark"
                     ? "0 8px 32px 0 rgba(0, 0, 0, 0.3)"
                     : "0 8px 32px 0 rgba(31, 38, 135, 0.10)",
                 transition: "box-shadow 0.3s, transform 0.3s, background 0.3s",
                 "&:hover": {
                   boxShadow:
-                    theme.palette.mode === "dark"
+                    chartTheme.palette.mode === "dark"
                       ? "0 12px 40px 0 rgba(0, 0, 0, 0.4)"
                       : "0 12px 40px 0 rgba(31, 38, 135, 0.18)",
                   transform: "translateY(-4px) scale(1.01)",
@@ -485,66 +458,129 @@ const ChartsSection = ({
                 </Typography>
               </Box>
               <ResponsiveContainer width="100%" height={250}>
-                <AreaChart
-                  data={getMonthlyData()}
-                  margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
-                >
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    stroke={chartTheme.palette.divider}
-                  />
-                  <XAxis dataKey="month" />
-                  <YAxis />
-                  <Tooltip />
-                  <Area
-                    type="monotone"
-                    dataKey="applications"
-                    stackId="1"
-                    stroke={chartTheme.palette.primary.main}
-                    fill={`url(#colorApps)`}
-                    isAnimationActive
-                  />
-                  <Area
-                    type="monotone"
-                    dataKey="approved"
-                    stackId="2"
-                    stroke={chartTheme.palette.success.main}
-                    fill={`url(#colorApproved)`}
-                    isAnimationActive
-                  />
-                  <defs>
-                    <linearGradient id="colorApps" x1="0" y1="0" x2="0" y2="1">
-                      <stop
-                        offset="5%"
-                        stopColor={chartTheme.palette.primary.light}
-                        stopOpacity={0.8}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor={chartTheme.palette.primary.light}
-                        stopOpacity={0.1}
-                      />
-                    </linearGradient>
-                    <linearGradient
-                      id="colorApproved"
-                      x1="0"
-                      y1="0"
-                      x2="0"
-                      y2="1"
-                    >
-                      <stop
-                        offset="5%"
-                        stopColor={chartTheme.palette.success.light}
-                        stopOpacity={0.8}
-                      />
-                      <stop
-                        offset="95%"
-                        stopColor={chartTheme.palette.success.light}
-                        stopOpacity={0.1}
-                      />
-                    </linearGradient>
-                  </defs>
-                </AreaChart>
+                {monthlyData.length === 0 ? (
+                  <AreaChart
+                    data={fallbackMonthlyData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke={chartTheme.palette.divider}
+                    />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="applications"
+                      stackId="1"
+                      stroke={chartTheme.palette.primary.main}
+                      fill={`url(#colorApps)`}
+                      isAnimationActive
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="approved"
+                      stackId="2"
+                      stroke={chartTheme.palette.success.main}
+                      fill={`url(#colorApproved)`}
+                      isAnimationActive
+                    />
+                    <defs>
+                      <linearGradient id="colorApps" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor={chartTheme.palette.primary.light}
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={chartTheme.palette.primary.light}
+                          stopOpacity={0.1}
+                        />
+                      </linearGradient>
+                      <linearGradient
+                        id="colorApproved"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor={chartTheme.palette.success.light}
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={chartTheme.palette.success.light}
+                          stopOpacity={0.1}
+                        />
+                      </linearGradient>
+                    </defs>
+                  </AreaChart>
+                ) : (
+                  <AreaChart
+                    data={monthlyData}
+                    margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      stroke={chartTheme.palette.divider}
+                    />
+                    <XAxis dataKey="month" />
+                    <YAxis />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="applications"
+                      stackId="1"
+                      stroke={chartTheme.palette.primary.main}
+                      fill={`url(#colorApps)`}
+                      isAnimationActive
+                    />
+                    <Area
+                      type="monotone"
+                      dataKey="approved"
+                      stackId="2"
+                      stroke={chartTheme.palette.success.main}
+                      fill={`url(#colorApproved)`}
+                      isAnimationActive
+                    />
+                    <defs>
+                      <linearGradient id="colorApps" x1="0" y1="0" x2="0" y2="1">
+                        <stop
+                          offset="5%"
+                          stopColor={chartTheme.palette.primary.light}
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={chartTheme.palette.primary.light}
+                          stopOpacity={0.1}
+                        />
+                      </linearGradient>
+                      <linearGradient
+                        id="colorApproved"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="1"
+                      >
+                        <stop
+                          offset="5%"
+                          stopColor={chartTheme.palette.success.light}
+                          stopOpacity={0.8}
+                        />
+                        <stop
+                          offset="95%"
+                          stopColor={chartTheme.palette.success.light}
+                          stopOpacity={0.1}
+                        />
+                      </linearGradient>
+                    </defs>
+                  </AreaChart>
+                )}
               </ResponsiveContainer>
             </Paper>
           </Grid>
@@ -556,23 +592,23 @@ const ChartsSection = ({
                 borderRadius: 4,
                 height: "100%",
                 background:
-                  theme.palette.mode === "dark"
+                  chartTheme.palette.mode === "dark"
                     ? `linear-gradient(135deg, ${alpha(
-                        theme.palette.primary.dark,
+                        chartTheme.palette.primary.dark,
                         0.15
-                      )}, ${alpha(theme.palette.background.paper, 0.95)})`
+                      )}, ${alpha(chartTheme.palette.background.paper, 0.95)})`
                     : `linear-gradient(135deg, ${alpha(
-                        theme.palette.primary.light,
+                        chartTheme.palette.primary.light,
                         0.08
-                      )}, ${alpha(theme.palette.background.paper, 0.95)})`,
+                      )}, ${alpha(chartTheme.palette.background.paper, 0.95)})`,
                 boxShadow:
-                  theme.palette.mode === "dark"
+                  chartTheme.palette.mode === "dark"
                     ? "0 8px 32px 0 rgba(0, 0, 0, 0.3)"
                     : "0 8px 32px 0 rgba(31, 38, 135, 0.10)",
                 transition: "box-shadow 0.3s, transform 0.3s, background 0.3s",
                 "&:hover": {
                   boxShadow:
-                    theme.palette.mode === "dark"
+                    chartTheme.palette.mode === "dark"
                       ? "0 12px 40px 0 rgba(0, 0, 0, 0.4)"
                       : "0 12px 40px 0 rgba(31, 38, 135, 0.18)",
                   transform: "translateY(-4px) scale(1.01)",
@@ -591,7 +627,7 @@ const ChartsSection = ({
                 </Typography>
               </Box>
               <ResponsiveContainer width="100%" height={250}>
-                <ReBarChart data={getPurposeData()}>
+                <ReBarChart data={getPurposeData(approvedApplications)}>
                   <CartesianGrid
                     strokeDasharray="3 3"
                     stroke={chartTheme.palette.divider}
@@ -636,6 +672,15 @@ const ChartsSection = ({
       )}
     </Grid>
   );
+};
+
+ChartsSection.propTypes = {
+  applications: PropTypes.array.isRequired,
+  getStatusData: PropTypes.func.isRequired,
+  getMonthlyData: PropTypes.func.isRequired,
+  getPurposeData: PropTypes.func.isRequired,
+  userRole: PropTypes.string, // optional
+  userName: PropTypes.string,
 };
 
 export default ChartsSection;

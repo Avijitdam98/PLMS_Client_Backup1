@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { keyframes } from '@mui/system';
 
 const projectOptions = [
   "Check EMI Status",
@@ -39,6 +40,12 @@ const mockLoanData = {
     "Salary Slips (last 3 months)",
   ],
 };
+
+// Modern fade-in animation for messages
+const fadeIn = keyframes`
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+`;
 
 const Chatbot = ({ isLoggedIn, username }) => {
   const [messages, setMessages] = useState([
@@ -70,12 +77,111 @@ const Chatbot = ({ isLoggedIn, username }) => {
     setTimeout(() => {
       setIsTyping(false);
       let response;
+      const q = query.toLowerCase();
 
-      switch (query.toLowerCase()) {
+      // Project-specific Q&A
+      if (q.includes("document") && q.includes("professional loan")) {
+        response = {
+          text: `📄 For a professional loan, you typically need:
+• PAN Card
+• Aadhar Card
+• Bank Statement (last 6 months)
+• Salary Slips (last 3 months)
+• Professional qualification proof (if applicable)`,
+          options: ["Upload Documents", "Back to Main Menu"],
+        };
+      } else if (q.includes("minimum loan amount") || q.includes("min loan")) {
+        response = {
+          text: `💡 The minimum loan amount for a professional loan is ₹1,00,000.`,
+          options: ["Apply for a New Loan", "Back to Main Menu"],
+        };
+      } else if (q.includes("interest rate")) {
+        response = {
+          text: `💰 Our professional loan interest rates start from 10.5% per annum. The exact rate depends on your profile and loan amount.`,
+          options: ["Apply for a New Loan", "Back to Main Menu"],
+        };
+      } else if (q.includes("eligibility") && (q.includes("business") || q.includes("professional"))) {
+        response = {
+          text: `✅ Eligibility for a professional/business loan:
+• Indian resident, age 21-65
+• Practicing professional (doctor, CA, lawyer, etc.)
+• Minimum 2 years of work experience
+• Satisfactory credit score` ,
+          options: ["Apply for a New Loan", "Back to Main Menu"],
+        };
+      } else if (q.includes("kyc")) {
+        response = {
+          text: `🆔 KYC documents required:
+• PAN Card
+• Aadhar Card
+• Address Proof
+You can upload these in the 'Upload Documents' section.`,
+          options: ["Upload Documents", "Back to Main Menu"],
+        };
+      } else if (q.includes("prepay") || q.includes("prepayment")) {
+        response = {
+          text: `🔄 Yes, you can prepay your loan. Prepayment charges may apply as per your loan agreement. Please contact support for details.`,
+          options: ["Contact Support", "Back to Main Menu"],
+        };
+      } else if (q.includes("approval time") || q.includes("how long") || q.includes("processing time")) {
+        response = {
+          text: `⏳ Loan approval usually takes 2-3 business days after document submission. We'll notify you by email/SMS.`,
+          options: ["Check Loan Application Status", "Back to Main Menu"],
+        };
+      } else if (q.includes("reset password") || q.includes("forgot password")) {
+        response = {
+          text: `🔑 To reset your password, click 'Forgot Password' on the login page and follow the instructions.`,
+          options: ["Go to Login", "Back to Main Menu"],
+        };
+      } else if (q.includes("contact") && (q.includes("support") || q.includes("customer"))) {
+        response = {
+          text: `📞 Contact us at:
+• Email: support@plms.com
+• Phone: 1800-123-4567
+Would you like to start a live chat?`,
+          options: ["Start Live Chat", "Back to Main Menu"],
+        };
+      } else if (q.includes("loan status") || q.includes("application status")) {
+        response = {
+          text: `🔎 You can check your loan application status in your dashboard or by selecting 'Loan Application Status' below.`,
+          options: ["Loan Application Status", "Back to Main Menu"],
+        };
+      } else if (q.includes("emi") && q.includes("pay")) {
+        response = {
+          text: `💳 To pay your EMI, go to the 'Pay EMI' section in your dashboard or select 'Pay EMI' below.`,
+          options: ["Pay EMI", "Back to Main Menu"],
+        };
+      } else if (q.includes("emi") && (q.includes("due") || q.includes("status"))) {
+        response = {
+          text: `📅 You can check your EMI status in your dashboard or by selecting 'Check EMI Status' below.`,
+          options: ["Check EMI Status", "Back to Main Menu"],
+        };
+      } else if (q.includes("apply") && q.includes("loan")) {
+        response = {
+          text: `📝 You can apply for a new professional loan by clicking 'Apply for a New Loan' below or visiting the loan application page.`,
+          options: ["Apply for a New Loan", "Back to Main Menu"],
+        };
+      } else if (q.includes("upload") && q.includes("document")) {
+        response = {
+          text: `📤 You can upload your documents in the 'Upload Documents' section of your dashboard.`,
+          options: ["Upload Documents", "Back to Main Menu"],
+        };
+      } else if (q.includes("dashboard")) {
+        response = {
+          text: `🏠 Your dashboard provides access to your loan applications, EMI status, and document uploads.`,
+          options: ["Go to Dashboard", "Back to Main Menu"],
+        };
+      } else if (q.includes("news") || q.includes("events")) {
+        response = {
+          text: `📰 You can view the latest news and upcoming events in the 'News & Events' section.`,
+          options: ["Go to News & Events", "Back to Main Menu"],
+        };
+      } else {
+        switch (q) {
         case "check emi status":
           if (!isLoggedIn) {
             response = {
-              text: `ℹ️ You're not logged in, so here’s a sample EMI overview:\n\n• Loan ID: LN12345 (Active)\n  EMI: ₹12,500 due on May 10, 2025\n\nLogin to view your actual EMIs.`,
+                text: `ℹ️ You're not logged in, so here's a sample EMI overview:\n\n• Loan ID: LN12345 (Active)\n  EMI: ₹12,500 due on May 10, 2025\n\nLogin to view your actual EMIs.`,
               options: ["Login", "Back to Main Menu"],
             };
             break;
@@ -223,8 +329,8 @@ const Chatbot = ({ isLoggedIn, username }) => {
           return;
 
         default:
-          if (query.toLowerCase().startsWith("loan id")) {
-            const loanId = query.split(" ").slice(-1)[0].toUpperCase();
+            if (q.toLowerCase().startsWith("loan id")) {
+              const loanId = q.split(" ").slice(-1)[0].toUpperCase();
             const loan = mockLoanData.userLoans.find((l) => l.id === loanId);
             response = loan
               ? {
@@ -238,23 +344,24 @@ const Chatbot = ({ isLoggedIn, username }) => {
                   options: ["Back to Main Menu"],
                 };
           } else if (
-            query.toLowerCase().includes("hello") ||
-            query.toLowerCase().includes("hi")
+              q.toLowerCase().includes("hello") ||
+              q.toLowerCase().includes("hi")
           ) {
             response = {
               text: "👋 Hi there! I'm your PLMS Assistant. Ask me anything related to loans, documents, or EMI payments.",
               options: projectOptions,
             };
-          } else if (query.toLowerCase().includes("thank")) {
+            } else if (q.toLowerCase().includes("thank")) {
             response = {
               text: "😊 You're welcome! Let me know if I can assist you with anything else.",
               options: ["Back to Main Menu"],
             };
           } else {
             response = {
-              text: "🤔 Sorry, I didn’t get that. Please select an option or try asking again.",
+                text: "🤔 Sorry, I didn't get that. Please select an option or try asking again.",
               options: projectOptions,
             };
+            }
           }
       }
 
@@ -262,7 +369,7 @@ const Chatbot = ({ isLoggedIn, username }) => {
         ...prev,
         { text: response.text, sender: "bot", options: response.options },
       ]);
-    }, 1000 + Math.random() * 400); // Slightly varied typing delay
+    }, 1000 + Math.random() * 400);
   };
 
   const handleOptionClick = (option) => {
@@ -288,12 +395,14 @@ const Chatbot = ({ isLoggedIn, username }) => {
             bottom: 20,
             right: 20,
             zIndex: 1000,
-            backgroundColor: "#1a73e8",
+            background: "linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%)",
             color: "white",
-            width: 56,
-            height: 56,
-            "&:hover": { backgroundColor: "#1557b0" },
-            boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+            width: 60,
+            height: 60,
+            borderRadius: '50%',
+            boxShadow: "0 6px 24px rgba(109, 40, 217, 0.18)",
+            border: 'none',
+            '&:hover': { background: "linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%)" },
           }}
         >
           {isOpen ? <CloseIcon /> : <ChatIcon />}
@@ -308,19 +417,21 @@ const Chatbot = ({ isLoggedIn, username }) => {
             bottom: 90,
             right: 20,
             zIndex: 1000,
-            width: 380,
-            height: 520,
+            width: { xs: 320, sm: 380 },
+            height: { xs: 420, sm: 520 },
             display: "flex",
             flexDirection: "column",
-            borderRadius: "16px",
+            borderRadius: "24px",
             overflow: "hidden",
-            backgroundColor: "#fff",
-            boxShadow: "0 8px 24px rgba(0, 0, 0, 0.15)",
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(16px)",
+            boxShadow: "0 12px 40px rgba(109, 40, 217, 0.18)",
+            border: '1px solid rgba(109, 40, 217, 0.10)',
           }}
         >
           <Box
             sx={{
-              backgroundColor: "#1a73e8",
+              background: "linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%)",
               color: "white",
               p: 2,
               display: "flex",
@@ -329,7 +440,7 @@ const Chatbot = ({ isLoggedIn, username }) => {
             }}
           >
             <SmartToyIcon />
-            <Typography variant="h6" fontWeight={500}>
+            <Typography variant="h6" fontWeight={600}>
               PLMS Assistant
             </Typography>
           </Box>
@@ -342,11 +453,11 @@ const Chatbot = ({ isLoggedIn, username }) => {
               display: "flex",
               flexDirection: "column",
               gap: 2,
-              backgroundColor: "#f9fafb",
+              background: "rgba(245,247,255,0.7)",
             }}
           >
             {messages.map((message, index) => (
-              <Box key={index}>
+              <Box key={index} sx={{ animation: `${fadeIn} 0.4s` }}>
                 <Box
                   sx={{
                     display: "flex",
@@ -357,7 +468,7 @@ const Chatbot = ({ isLoggedIn, username }) => {
                   }}
                 >
                   {message.sender === "bot" && (
-                    <Avatar sx={{ bgcolor: "#1a73e8", width: 32, height: 32 }}>
+                    <Avatar sx={{ bgcolor: "#6d28d9", width: 32, height: 32 }}>
                       <SmartToyIcon fontSize="small" />
                     </Avatar>
                   )}
@@ -365,13 +476,16 @@ const Chatbot = ({ isLoggedIn, username }) => {
                     sx={{
                       p: 1.5,
                       maxWidth: "75%",
-                      backgroundColor:
-                        message.sender === "user" ? "#1a73e8" : "#fff",
-                      color: message.sender === "user" ? "white" : "black",
+                      background:
+                        message.sender === "user"
+                          ? "linear-gradient(90deg, #6d28d9 0%, #4c1d95 100%)"
+                          : "rgba(255,255,255,0.95)",
+                      color: message.sender === "user" ? "white" : "#1e293b",
                       borderRadius:
                         message.sender === "user"
-                          ? "16px 16px 0 16px"
-                          : "16px 16px 16px 0",
+                          ? "20px 20px 0 20px"
+                          : "20px 20px 20px 0",
+                      boxShadow: '0 2px 8px rgba(109, 40, 217, 0.08)',
                     }}
                   >
                     <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
@@ -379,7 +493,7 @@ const Chatbot = ({ isLoggedIn, username }) => {
                     </Typography>
                   </Paper>
                   {message.sender === "user" && (
-                    <Avatar sx={{ bgcolor: "#1a73e8", width: 32, height: 32 }}>
+                    <Avatar sx={{ bgcolor: "#6d28d9", width: 32, height: 32 }}>
                       <PersonIcon fontSize="small" />
                     </Avatar>
                   )}
@@ -387,19 +501,21 @@ const Chatbot = ({ isLoggedIn, username }) => {
                 {message.sender === "bot" && message.options?.length > 0 && (
                   <Grid container spacing={1} sx={{ mt: 1 }}>
                     {message.options.map((option, idx) => (
-                      <Grid item xs={6} key={idx}>
+                      <Grid item xs={12} sm={6} key={idx}>
                         <Button
                           variant="outlined"
                           fullWidth
                           onClick={() => handleOptionClick(option)}
                           sx={{
                             textTransform: "none",
-                            fontSize: "0.85rem",
-                            borderColor: "#1a73e8",
-                            color: "#1a73e8",
-                            "&:hover": {
-                              backgroundColor: "rgba(26, 115, 232, 0.04)",
-                              borderColor: "#1557b0",
+                            fontSize: "0.95rem",
+                            borderColor: "#6d28d9",
+                            color: "#6d28d9",
+                            borderRadius: 2,
+                            fontWeight: 600,
+                            '&:hover': {
+                              background: "rgba(109, 40, 217, 0.06)",
+                              borderColor: "#4c1d95",
                             },
                           }}
                         >
@@ -413,17 +529,17 @@ const Chatbot = ({ isLoggedIn, username }) => {
             ))}
             {isTyping && (
               <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Avatar sx={{ bgcolor: "#1a73e8", width: 32, height: 32 }}>
+                <Avatar sx={{ bgcolor: "#6d28d9", width: 32, height: 32 }}>
                   <SmartToyIcon fontSize="small" />
                 </Avatar>
-                <Paper sx={{ p: 1.5, borderRadius: "16px 16px 16px 0" }}>
+                <Paper sx={{ p: 1.5, borderRadius: "20px 20px 20px 0" }}>
                   <Typography variant="body2">Typing...</Typography>
                 </Paper>
               </Box>
             )}
             {loading && (
               <Box sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
-                <CircularProgress size={24} color="primary" />
+                <CircularProgress size={24} color="secondary" />
               </Box>
             )}
             <div ref={messagesEndRef} />
@@ -436,20 +552,21 @@ const Chatbot = ({ isLoggedIn, username }) => {
               display: "flex",
               gap: 1,
               alignItems: "center",
-              backgroundColor: "#fff",
+              background: "rgba(255,255,255,0.95)",
             }}
           >
             <TextField
               fullWidth
               size="small"
-              placeholder="Ask about your loan..."
+              placeholder="Ask about your loan, documents, or support..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSend()}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "20px",
-                  backgroundColor: "#f1f3f4",
+                  background: "rgba(245,247,255,0.7)",
+                  fontSize: '1rem',
                 },
               }}
               disabled={loading}
@@ -458,9 +575,12 @@ const Chatbot = ({ isLoggedIn, username }) => {
               onClick={handleSend}
               disabled={loading || !input.trim()}
               sx={{
-                backgroundColor: "#1a73e8",
+                background: "linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%)",
                 color: "white",
-                "&:hover": { backgroundColor: "#1557b0" },
+                borderRadius: '50%',
+                width: 44,
+                height: 44,
+                '&:hover': { background: "linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%)" },
               }}
             >
               <SendIcon />
