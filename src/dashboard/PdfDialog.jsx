@@ -27,7 +27,24 @@ import {
   CheckCircle as CheckCircleIcon,
 } from "@mui/icons-material";
 import { motion } from "framer-motion";
-import { Card } from "@mui/material";
+/*************  ✨ Windsurf Command ⭐  *************/
+/**
+ * PdfDialog - A Material UI dialog component for displaying a list of
+ * PDF documents related to a loan application. It also allows the user to
+ * download or preview the documents.
+ *
+ * Props:
+ * - `open`: boolean indicating whether the dialog is open or not
+ * - `onClose`: a function to call when the dialog is closed
+ * - `docsLoading`: boolean indicating whether the documents are still loading
+ * - `selectedDocs`: an array of objects containing the document data
+ * - `userRole`: a string indicating the role of the user (e.g. "ADMIN")
+ * - `onVerify`: a function to call when the user verifies a document
+ * - `processing`: a boolean indicating whether a document is being processed
+ * - `snackbar`: an object containing the snackbar message and severity
+ * - `handleSnackbarClose`: a function to call when the snackbar is closed
+ */
+/*******  a31b95bd-283d-4e68-acb1-7e3f95ede155  *******/import { Card } from "@mui/material";
 
 const PdfDialog = ({
   open,
@@ -117,7 +134,7 @@ const PdfDialog = ({
           </Box>
         ) : selectedDocs.length === 0 ? (
           <Box sx={{ p: 3, textAlign: "center" }}>
-            <Typography 
+            <Typography
               variant="body1"
               sx={{
                 color: theme.palette.mode === 'dark'
@@ -132,8 +149,8 @@ const PdfDialog = ({
           <Box sx={{ p: 2 }}>
             <Typography
               variant="subtitle1"
-              sx={{ 
-                mb: 2, 
+              sx={{
+                mb: 2,
                 fontWeight: 600,
                 color: theme.palette.mode === 'dark'
                   ? theme.palette.text.primary
@@ -199,7 +216,7 @@ const PdfDialog = ({
                         label={doc.documentType}
                         size="small"
                         color="info"
-                        sx={{ 
+                        sx={{
                           mr: 2,
                           background: theme.palette.mode === 'dark'
                             ? alpha(theme.palette.info.main, 0.2)
@@ -253,8 +270,8 @@ const PdfDialog = ({
       </DialogContent>
 
       <DialogActions sx={{ p: 2 }}>
-        <Button 
-          onClick={onClose} 
+        <Button
+          onClick={onClose}
           variant="outlined"
           sx={{
             borderColor: theme.palette.mode === 'dark'
@@ -271,8 +288,8 @@ const PdfDialog = ({
 
       <Backdrop
         open={Boolean(processing)}
-        sx={{ 
-          color: "#fff", 
+        sx={{
+          color: "#fff",
           zIndex: (theme) => theme.zIndex.drawer + 1,
           background: theme.palette.mode === 'dark'
             ? alpha(theme.palette.background.paper, 0.8)
@@ -291,7 +308,7 @@ const PdfDialog = ({
         <Alert
           onClose={handleSnackbarClose}
           severity={snackbar?.severity || 'info'}
-          sx={{ 
+          sx={{
             width: "100%",
             background: theme.palette.mode === 'dark'
               ? alpha(theme.palette.background.paper, 0.9)

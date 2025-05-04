@@ -1,20 +1,20 @@
 // src/components/EmiCalculator.jsx
-import React, { useState } from "react";
-import { GlassCard, GradientButton } from "./StyledComponents";
-import {
-  Grid,
-  TextField,
-  InputAdornment,
-  Typography,
-  Tooltip,
-  Box,
-  Divider,
-} from "@mui/material";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
-import PercentIcon from "@mui/icons-material/Percent";
 import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import PercentIcon from "@mui/icons-material/Percent";
+import {
+  Box,
+  Divider,
+  Grid,
+  InputAdornment,
+  TextField,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { GlassCard, GradientButton } from "./StyledComponents";
 
 export default function EmiCalculator() {
   const [loanAmount, setLoanAmount] = useState(500000);
@@ -32,7 +32,7 @@ export default function EmiCalculator() {
           rateOfInterest *
           Math.pow(1 + rateOfInterest, tenureInMonths)) /
         (Math.pow(1 + rateOfInterest, tenureInMonths) - 1);
-      setEmi(emi.toFixed(2));
+      setEmi(Math.round(emi));
     } else {
       setEmi(0);
     }
@@ -228,7 +228,9 @@ export default function EmiCalculator() {
                         }}
                       >
                         Your Monthly EMI:{" "}
-                        <span style={{ color: "#00c6fb" }}>₹{emi}</span>
+                        <span style={{ color: "#00c6fb" }}>
+                          ₹{Number(emi).toLocaleString("en-IN")}
+                        </span>
                       </Typography>
                       <Typography
                         variant="body2"

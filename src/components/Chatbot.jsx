@@ -14,6 +14,8 @@ import {
   TextField,
   Tooltip,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -48,6 +50,10 @@ const fadeIn = keyframes`
 `;
 
 const Chatbot = ({ isLoggedIn, username }) => {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.between('sm', 'md'));
+
   const [messages, setMessages] = useState([
     {
       text: `👋 Hello${
@@ -62,18 +68,36 @@ const Chatbot = ({ isLoggedIn, username }) => {
   const [loading, setLoading] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
   const messagesEndRef = useRef(null);
+  const messageContainerRef = useRef(null);
   const navigate = useNavigate();
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, isTyping]);
+
+  // Handle window resize
+  useEffect(() => {
+    const handleResize = () => {
+      if (messageContainerRef.current) {
+        scrollToBottom();
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const getBotResponse = (query) => {
     setIsTyping(true);
+    // Add a small delay to improve user experience
+    const responseDelay = Math.min(1000 + query.length * 10, 2000);
+
     setTimeout(() => {
       setIsTyping(false);
       let response;
@@ -369,7 +393,7 @@ Would you like to start a live chat?`,
         ...prev,
         { text: response.text, sender: "bot", options: response.options },
       ]);
-    }, 1000 + Math.random() * 400);
+    }, responseDelay);
   };
 
   const handleOptionClick = (option) => {
@@ -385,6 +409,56 @@ Would you like to start a live chat?`,
     getBotResponse(temp);
   };
 
+  // Calculate dynamic dimensions based on device size
+  const getChatWindowDimensions = () => {
+    if (isMobile) {
+      return {
+        width: 'calc(100vw - 32px)', // Full width minus margins
+        height: '60vh',
+        bottom: 80,
+        right: 16,
+        borderRadius: '16px'
+      };
+    } else if (isTablet) {
+      return {
+        width: '420px',
+        height: '500px',
+        bottom: 90,
+        right: 20,
+        borderRadius: '20px'
+      };
+    } else {
+      return {
+        width: '420px',
+        height: '560px',
+        bottom: 90,
+        right: 20,
+        borderRadius: '24px'
+      };
+    }
+  };
+
+  const dimensions = getChatWindowDimensions();
+
+  // Optimize options display based on device
+  const getOptionGridProps = (options) => {
+    if (!options || options.length === 0) return {};
+
+    // Short options can be displayed side by side on all devices
+    if (options.length <= 2 || !options.some(opt => opt.length > 15)) {
+      return { xs: 6 };
+    }
+
+    // For longer options or more options
+    if (isMobile) {
+      return { xs: 12 }; // Full width on mobile
+    } else if (isTablet) {
+      return { xs: 6 }; // Two columns on tablet
+    } else {
+      return { xs: 6 }; // Two columns on desktop
+    }
+  };
+
   return (
     <>
       <Tooltip title="Chat with PLMS Assistant">
@@ -392,17 +466,18 @@ Would you like to start a live chat?`,
           onClick={() => setIsOpen(!isOpen)}
           sx={{
             position: "fixed",
-            bottom: 20,
-            right: 20,
+            bottom: isMobile ? 16 : 20,
+            right: isMobile ? 16 : 20,
             zIndex: 1000,
             background: "linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%)",
             color: "white",
-            width: 60,
-            height: 60,
+            width: isMobile ? 50 : 60,
+            height: isMobile ? 50 : 60,
             borderRadius: '50%',
             boxShadow: "0 6px 24px rgba(109, 40, 217, 0.18)",
             border: 'none',
             '&:hover': { background: "linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%)" },
+            transition: 'all 0.3s ease'
           }}
         >
           {isOpen ? <CloseIcon /> : <ChatIcon />}
@@ -414,42 +489,46 @@ Would you like to start a live chat?`,
         <Box
           sx={{
             position: "fixed",
-            bottom: 90,
-            right: 20,
+            bottom: dimensions.bottom,
+            right: dimensions.right,
             zIndex: 1000,
-            width: { xs: 320, sm: 380 },
-            height: { xs: 420, sm: 520 },
+            width: dimensions.width,
+            height: dimensions.height,
             display: "flex",
             flexDirection: "column",
-            borderRadius: "24px",
+            borderRadius: dimensions.borderRadius,
             overflow: "hidden",
             background: "rgba(255,255,255,0.85)",
             backdropFilter: "blur(16px)",
             boxShadow: "0 12px 40px rgba(109, 40, 217, 0.18)",
             border: '1px solid rgba(109, 40, 217, 0.10)',
+            transition: 'all 0.3s ease'
           }}
         >
+          {/* Header */}
           <Box
             sx={{
               background: "linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%)",
               color: "white",
-              p: 2,
+              p: isMobile ? 1.5 : 2,
               display: "flex",
               alignItems: "center",
               gap: 1,
             }}
           >
             <SmartToyIcon />
-            <Typography variant="h6" fontWeight={600}>
+            <Typography variant={isMobile ? "subtitle1" : "h6"} fontWeight={600}>
               PLMS Assistant
             </Typography>
           </Box>
 
+          {/* Messages Container */}
           <Box
+            ref={messageContainerRef}
             sx={{
               flex: 1,
               overflowY: "auto",
-              p: 2,
+              p: isMobile ? 1.5 : 2,
               display: "flex",
               flexDirection: "column",
               gap: 2,
@@ -468,13 +547,17 @@ Would you like to start a live chat?`,
                   }}
                 >
                   {message.sender === "bot" && (
-                    <Avatar sx={{ bgcolor: "#6d28d9", width: 32, height: 32 }}>
-                      <SmartToyIcon fontSize="small" />
+                    <Avatar sx={{
+                      bgcolor: "#6d28d9",
+                      width: isMobile ? 28 : 32,
+                      height: isMobile ? 28 : 32
+                    }}>
+                      <SmartToyIcon fontSize={isMobile ? "small" : "medium"} />
                     </Avatar>
                   )}
                   <Paper
                     sx={{
-                      p: 1.5,
+                      p: isMobile ? 1.25 : 1.5,
                       maxWidth: "75%",
                       background:
                         message.sender === "user"
@@ -486,54 +569,111 @@ Would you like to start a live chat?`,
                           ? "20px 20px 0 20px"
                           : "20px 20px 20px 0",
                       boxShadow: '0 2px 8px rgba(109, 40, 217, 0.08)',
+                      fontSize: isMobile ? '0.95rem' : '1rem'
                     }}
                   >
-                    <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+                    <Typography
+                      variant={isMobile ? "body2" : "body1"}
+                      sx={{
+                        whiteSpace: "pre-line",
+                        fontSize: isMobile ? '0.875rem' : '0.9375rem'
+                      }}
+                    >
                       {message.text}
                     </Typography>
                   </Paper>
                   {message.sender === "user" && (
-                    <Avatar sx={{ bgcolor: "#6d28d9", width: 32, height: 32 }}>
-                      <PersonIcon fontSize="small" />
+                    <Avatar sx={{
+                      bgcolor: "#6d28d9",
+                      width: isMobile ? 28 : 32,
+                      height: isMobile ? 28 : 32
+                    }}>
+                      <PersonIcon fontSize={isMobile ? "small" : "medium"} />
                     </Avatar>
                   )}
                 </Box>
                 {message.sender === "bot" && message.options?.length > 0 && (
                   <Grid container spacing={1} sx={{ mt: 1 }}>
-                    {message.options.map((option, idx) => (
-                      <Grid item xs={12} sm={6} key={idx}>
-                        <Button
-                          variant="outlined"
-                          fullWidth
-                          onClick={() => handleOptionClick(option)}
-                          sx={{
-                            textTransform: "none",
-                            fontSize: "0.95rem",
-                            borderColor: "#6d28d9",
-                            color: "#6d28d9",
-                            borderRadius: 2,
-                            fontWeight: 600,
-                            '&:hover': {
-                              background: "rgba(109, 40, 217, 0.06)",
-                              borderColor: "#4c1d95",
-                            },
-                          }}
-                        >
-                          {option}
-                        </Button>
-                      </Grid>
-                    ))}
+                    {message.options.map((option, idx) => {
+                      const gridProps = getOptionGridProps(message.options);
+                      return (
+                        <Grid item {...gridProps} key={idx}>
+                          <Button
+                            variant="outlined"
+                            fullWidth
+                            onClick={() => handleOptionClick(option)}
+                            sx={{
+                              textTransform: "none",
+                              fontSize: isMobile ? "0.85rem" : "0.95rem",
+                              borderColor: "#6d28d9",
+                              color: "#6d28d9",
+                              borderRadius: 2,
+                              fontWeight: 600,
+                              padding: isMobile ? "6px 10px" : "8px 16px",
+                              whiteSpace: "nowrap",
+                              overflow: "hidden",
+                              textOverflow: "ellipsis",
+                              '&:hover': {
+                                background: "rgba(109, 40, 217, 0.06)",
+                                borderColor: "#4c1d95",
+                              },
+                            }}
+                          >
+                            {option}
+                          </Button>
+                        </Grid>
+                      );
+                    })}
                   </Grid>
                 )}
               </Box>
             ))}
             {isTyping && (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Avatar sx={{ bgcolor: "#6d28d9", width: 32, height: 32 }}>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, animation: `${fadeIn} 0.3s` }}>
+                <Avatar sx={{
+                  bgcolor: "#6d28d9",
+                  width: isMobile ? 28 : 32,
+                  height: isMobile ? 28 : 32
+                }}>
                   <SmartToyIcon fontSize="small" />
                 </Avatar>
-                <Paper sx={{ p: 1.5, borderRadius: "20px 20px 20px 0" }}>
-                  <Typography variant="body2">Typing...</Typography>
+                <Paper sx={{
+                  p: isMobile ? 1.25 : 1.5,
+                  borderRadius: "20px 20px 20px 0",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1
+                }}>
+                  <Box sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 0.5
+                  }}>
+                    <Box sx={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#6d28d9',
+                      borderRadius: '50%',
+                      animation: `pulse 1.2s infinite ease-in-out`,
+                      animationDelay: '0s'
+                    }} />
+                    <Box sx={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#6d28d9',
+                      borderRadius: '50%',
+                      animation: `pulse 1.2s infinite ease-in-out`,
+                      animationDelay: '0.2s'
+                    }} />
+                    <Box sx={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#6d28d9',
+                      borderRadius: '50%',
+                      animation: `pulse 1.2s infinite ease-in-out`,
+                      animationDelay: '0.4s'
+                    }} />
+                  </Box>
                 </Paper>
               </Box>
             )}
@@ -545,9 +685,10 @@ Would you like to start a live chat?`,
             <div ref={messagesEndRef} />
           </Box>
 
+          {/* Input Box */}
           <Box
             sx={{
-              p: 1.5,
+              p: isMobile ? 1 : 1.5,
               borderTop: "1px solid #e0e0e0",
               display: "flex",
               gap: 1,
@@ -558,7 +699,7 @@ Would you like to start a live chat?`,
             <TextField
               fullWidth
               size="small"
-              placeholder="Ask about your loan, documents, or support..."
+              placeholder={isMobile ? "Ask a question..." : "Ask about your loan, documents, or support..."}
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={(e) => e.key === "Enter" && handleSend()}
@@ -566,7 +707,7 @@ Would you like to start a live chat?`,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "20px",
                   background: "rgba(245,247,255,0.7)",
-                  fontSize: '1rem',
+                  fontSize: isMobile ? '0.875rem' : '1rem',
                 },
               }}
               disabled={loading}
@@ -578,12 +719,15 @@ Would you like to start a live chat?`,
                 background: "linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%)",
                 color: "white",
                 borderRadius: '50%',
-                width: 44,
-                height: 44,
+                width: isMobile ? 38 : 44,
+                height: isMobile ? 38 : 44,
                 '&:hover': { background: "linear-gradient(135deg, #4c1d95 0%, #6d28d9 100%)" },
+                '&.Mui-disabled': {
+                  background: '#e0e0e0',
+                }
               }}
             >
-              <SendIcon />
+              <SendIcon fontSize={isMobile ? "small" : "medium"} />
             </IconButton>
           </Box>
         </Box>

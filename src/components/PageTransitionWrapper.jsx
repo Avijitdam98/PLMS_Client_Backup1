@@ -17,4 +17,4 @@ export default function PageTransitionWrapper({ children }) {
       </motion.div>
     </AnimatePresence>
   );
-} 
+}

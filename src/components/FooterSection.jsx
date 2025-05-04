@@ -1,34 +1,34 @@
 // src/components/FooterSection.jsx
-import React, { useState } from "react";
+import EmailIcon from "@mui/icons-material/Email";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import LinkedInIcon from "@mui/icons-material/LinkedIn";
-import TwitterIcon from "@mui/icons-material/Twitter";
-import YouTubeIcon from "@mui/icons-material/YouTube";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PhoneIcon from "@mui/icons-material/Phone";
-import EmailIcon from "@mui/icons-material/Email";
 import SendIcon from "@mui/icons-material/Send";
+import TwitterIcon from "@mui/icons-material/Twitter";
 import VerifiedIcon from "@mui/icons-material/Verified";
+import YouTubeIcon from "@mui/icons-material/YouTube";
 import {
+  Avatar,
   Box,
+  Button,
   Container,
+  Divider,
   Grid,
   IconButton,
+  InputAdornment,
   Link as MuiLink,
   Stack,
-  Typography,
   TextField,
-  Button,
-  Divider,
-  useTheme,
-  useMediaQuery,
-  InputAdornment,
   Tooltip,
-  Avatar,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 import { styled } from "@mui/material/styles";
+import { motion } from "framer-motion";
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
 // Styled components
 const GradientText = styled(Typography)({
@@ -196,27 +196,27 @@ const resourceLinks = [
   {
     text: "Investor Relations",
     url: "/investor-relations",
-    isExternal: false
+    isExternal: false,
   },
-  { 
-    text: "Careers", 
+  {
+    text: "Careers",
     url: "/careers",
-    isExternal: false
+    isExternal: false,
   },
-  { 
-    text: "News & Events", 
+  {
+    text: "News & Events",
     url: "/news-events",
-    isExternal: false
+    isExternal: false,
   },
   {
     text: "Privacy Policy",
     url: "/privacy-policy",
-    isExternal: false
+    isExternal: false,
   },
-  { 
-    text: "Terms of Service", 
+  {
+    text: "Terms of Service",
     url: "/terms-of-service",
-    isExternal: false
+    isExternal: false,
   },
 ];
 
@@ -482,7 +482,7 @@ export default function FooterSection() {
                   variant="body2"
                   sx={{ color: "rgba(255,255,255,0.8)" }}
                 >
-                  RBI Registered NBFC (CIN: L65191TN1954PLC002429)
+                  RBI Registered NBFC (CIN: ABCDEFGHIJKLMNO)
                 </Typography>
               </Box>
             </motion.div>
@@ -515,7 +515,7 @@ export default function FooterSection() {
                     to={link.path}
                     onClick={handleNavigation}
                     underline="none"
-                    sx={{ display: 'block' }}
+                    sx={{ display: "block" }}
                   >
                     {link.name}
                   </GlowingLink>
@@ -698,13 +698,28 @@ export default function FooterSection() {
           </Typography>
 
           <Stack direction="row" spacing={3}>
-            <GlowingLink component={Link} to="/accessibility" underline="none" sx={{ fontSize: "0.9rem" }}>
+            <GlowingLink
+              component={Link}
+              to="/accessibility"
+              underline="none"
+              sx={{ fontSize: "0.9rem" }}
+            >
               Accessibility
             </GlowingLink>
-            <GlowingLink component={Link} to="/cookies" underline="none" sx={{ fontSize: "0.9rem" }}>
+            <GlowingLink
+              component={Link}
+              to="/cookies"
+              underline="none"
+              sx={{ fontSize: "0.9rem" }}
+            >
               Cookies
             </GlowingLink>
-            <GlowingLink component={Link} to="/sitemap" underline="none" sx={{ fontSize: "0.9rem" }}>
+            <GlowingLink
+              component={Link}
+              to="/sitemap"
+              underline="none"
+              sx={{ fontSize: "0.9rem" }}
+            >
               Sitemap
             </GlowingLink>
           </Stack>

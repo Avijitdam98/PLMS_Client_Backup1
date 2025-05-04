@@ -58,10 +58,10 @@ const teamMembers = [
     image:
       "https://avatars.githubusercontent.com/u/187367139?s=400&u=2e90fd35211770138b63950609ddb75580ed604f&v=4",
   },
-   {
+  {
     name: "Chaitanya",
     image:
-      "https://avatars.githubusercontent.com/u/187367139?s=400&u=2e90fd35211770138b63950609ddb75580ed604f&v=4",
+      "https://avatars.githubusercontent.com/u/170529120?s=400&u=efda94b8d657f05f5e9de88c5b4a6dccba1a6fc0&v=4",
   },
 ];
 

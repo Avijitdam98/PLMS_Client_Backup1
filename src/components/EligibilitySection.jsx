@@ -20,13 +20,15 @@ import { motion } from "framer-motion";
 const ModernCard = styled(motion.div)(({ theme }) => ({
   padding: theme.spacing(4),
   borderRadius: 24,
-  background: theme.palette.mode === 'dark'
-    ? 'rgba(19, 47, 76, 0.85)'
-    : 'rgba(255, 255, 255, 0.85)',
+  background:
+    theme.palette.mode === "dark"
+      ? "rgba(19, 47, 76, 0.85)"
+      : "rgba(255, 255, 255, 0.85)",
   backdropFilter: "blur(10px)",
-  boxShadow: theme.palette.mode === 'dark'
-    ? '0 10px 40px rgba(0, 0, 0, 0.3)'
-    : '0 10px 40px rgba(0, 94, 184, 0.08)',
+  boxShadow:
+    theme.palette.mode === "dark"
+      ? "0 10px 40px rgba(0, 0, 0, 0.3)"
+      : "0 10px 40px rgba(0, 94, 184, 0.08)",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
@@ -36,9 +38,10 @@ const ModernCard = styled(motion.div)(({ theme }) => ({
   cursor: "pointer",
   overflow: "hidden",
   position: "relative",
-  border: theme.palette.mode === 'dark'
-    ? '1px solid rgba(255, 255, 255, 0.1)'
-    : '1px solid rgba(255, 255, 255, 0.18)',
+  border:
+    theme.palette.mode === "dark"
+      ? "1px solid rgba(255, 255, 255, 0.1)"
+      : "1px solid rgba(255, 255, 255, 0.18)",
   "&::before": {
     content: '""',
     position: "absolute",
@@ -46,16 +49,18 @@ const ModernCard = styled(motion.div)(({ theme }) => ({
     left: 0,
     width: "100%",
     height: "100%",
-    background: theme.palette.mode === 'dark'
-      ? 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)'
-      : 'linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%)',
+    background:
+      theme.palette.mode === "dark"
+        ? "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%)"
+        : "linear-gradient(135deg, rgba(255,255,255,0.3) 0%, rgba(255,255,255,0) 100%)",
     zIndex: -1,
   },
   "&:hover": {
     transform: "translateY(-12px) scale(1.02)",
-    boxShadow: theme.palette.mode === 'dark'
-      ? '0 20px 50px rgba(0, 0, 0, 0.4)'
-      : '0 20px 50px rgba(0, 94, 184, 0.15)',
+    boxShadow:
+      theme.palette.mode === "dark"
+        ? "0 20px 50px rgba(0, 0, 0, 0.4)"
+        : "0 20px 50px rgba(0, 94, 184, 0.15)",
   },
 }));
 
@@ -102,28 +107,20 @@ const eligibility = [
   {
     icon: <BusinessCenterIcon />,
     text: "Professional Background",
-    tip: "Applicant must be a professional ",
+    tip: "Applicant must be a salaried professional and must provide a valid salary slip and PF account statement.",
   },
   {
     icon: <AssignmentIndIcon />,
     text: "Age 21 to 65 years",
     tip: "Applicant should be within the specified age range at loan maturity.",
   },
-  {
-    icon: <AccountBalanceIcon />,
-    text: "Minimum Annual Turnover",
-    tip: "Business should have a minimum turnover as per bank policy.",
-  },
+ 
   {
     icon: <CreditScoreIcon />,
     text: "Good Credit Score",
     tip: "A healthy credit score (usually 600+) is required for approval.",
   },
-  {
-    icon: <DescriptionIcon />,
-    text: "Valid Financial Documents",
-    tip: "Applicant must provide valid financial documents.",
-  },
+
   {
     icon: <VerifiedUserIcon />,
     text: "Indian Citizenship",

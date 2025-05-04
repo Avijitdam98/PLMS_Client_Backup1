@@ -31,43 +31,42 @@ function Login() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  try {
-    const response = await axios.post(
-      "http://localhost:8732/api/users/login",
-      formData
-    );
-    console.log("Login response:", response.data);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:8732/api/users/login",
+        formData
+      );
+      console.log("Login response:", response.data);
 
-    // 🔥 UPDATED check 🔥
-    if (
-      response.data &&
-      response.data.role != null &&
-      response.data.id != null
-    ) {
-      localStorage.setItem("user", JSON.stringify(response.data));
-      toast.success("Login successful!");
+      // 🔥 UPDATED check 🔥
+      if (
+        response.data &&
+        response.data.role != null &&
+        response.data.id != null
+      ) {
+        localStorage.setItem("user", JSON.stringify(response.data));
+        toast.success("Login successful!");
 
-      window.dispatchEvent(new Event("storage"));
+        window.dispatchEvent(new Event("storage"));
 
-      // Role based navigation
-      if (response.data.role === "ADMIN") {
-        navigate("/admin-dashboard");
-      } else if (response.data.role === "USER") {
-        navigate("/user-dashboard");
+        // Role based navigation
+        if (response.data.role === "ADMIN") {
+          navigate("/admin-dashboard");
+        } else if (response.data.role === "USER") {
+          navigate("/user-dashboard");
+        } else {
+          navigate("/dashboard");
+        }
       } else {
-        navigate("/dashboard");
+        throw new Error("Invalid user data");
       }
-    } else {
-      throw new Error("Invalid user data");
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error(error.response?.data?.message || "Login failed");
     }
-  } catch (error) {
-    console.error("Login error:", error);
-    toast.error(error.response?.data?.message || "Login failed");
-  }
-};
-
+  };
 
   return (
     <Grid container sx={{ minHeight: "100vh" }}>
