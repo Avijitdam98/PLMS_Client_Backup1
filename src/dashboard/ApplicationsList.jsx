@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   AttachMoney,
   Cancel,
@@ -34,6 +34,8 @@ import {
 } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import LoanApplicationDetailsDialog from "../components/LoanApplicationDetailsDialog";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const ApplicationsList = ({
   applications,
@@ -57,11 +59,28 @@ const ApplicationsList = ({
   const [comment, setComment] = useState("");
   const [selectedApplicationId, setSelectedApplicationId] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState(null);
+  const [hasCheckedCreditScore, setHasCheckedCreditScore] = useState(false);
+  const [creditScore, setCreditScore] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkCreditScoreStatus = () => {
+      const checked = localStorage.getItem("hasCheckedCreditScore") === "true";
+      const score = parseInt(localStorage.getItem("creditScore"), 10) || null;
+      setHasCheckedCreditScore(checked);
+      setCreditScore(score);
+    };
+
+    checkCreditScoreStatus();
+    window.addEventListener("storage", checkCreditScoreStatus);
+    return () => window.removeEventListener("storage", checkCreditScoreStatus);
+  }, []);
 
   const handleOpenDetails = (app) => {
     setSelectedApp(app);
     setDetailsOpen(true);
   };
+
   const handleCloseDetails = () => setDetailsOpen(false);
 
   const handleOpenCommentDialog = (applicationId, status) => {
@@ -83,6 +102,24 @@ const ApplicationsList = ({
       onStatusUpdate(selectedApplicationId, selectedStatus, comment);
     }
     handleCloseCommentDialog();
+  };
+
+  const handleNewApplicationClick = (e) => {
+    if (!hasCheckedCreditScore) {
+      e.preventDefault();
+      toast.error("Please check your credit score first!", {
+        position: "top-center",
+        style: { backgroundColor: "#ff4d4d", color: "#fff" },
+      });
+      navigate("/credit-score");
+    } else if (creditScore <= 600) {
+      e.preventDefault();
+      toast.error("Your credit score is too low to apply for a loan.", {
+        position: "top-center",
+        style: { backgroundColor: "#ff4d4d", color: "#fff" },
+      });
+      navigate("/credit-score");
+    }
   };
 
   return (
@@ -117,14 +154,28 @@ const ApplicationsList = ({
             Filter
           </Button>
           {user.role !== "ADMIN" && (
-            <Button
-              variant="contained"
-              color="primary"
-              sx={{ borderRadius: 3, fontWeight: 600 }}
-              href="/apply-loan"
+            <MuiTooltip
+              title={
+                !hasCheckedCreditScore
+                  ? "Please check your credit score first"
+                  : creditScore <= 600
+                  ? "Your credit score is too low to apply for a loan"
+                  : "Apply for a new loan"
+              }
             >
-              New Application
-            </Button>
+              <span>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  sx={{ borderRadius: 3, fontWeight: 600 }}
+                  href="/apply-loan"
+                  disabled={!hasCheckedCreditScore || creditScore <= 600}
+                  onClick={handleNewApplicationClick}
+                >
+                  New Application
+                </Button>
+              </span>
+            </MuiTooltip>
           )}
         </Box>
       </Box>

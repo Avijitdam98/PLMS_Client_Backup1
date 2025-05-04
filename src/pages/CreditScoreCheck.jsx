@@ -1,3 +1,4 @@
+// In CreditScoreCheck.jsx
 import {
   Alert,
   Box,
@@ -24,12 +25,10 @@ function CreditScoreCheck() {
   const calculateCreditScore = (pan) => {
     const upperPan = pan.toUpperCase();
     let hash = 0;
-
     for (let i = 0; i < upperPan.length; i++) {
       hash = (hash << 5) - hash + upperPan.charCodeAt(i);
       hash |= 0; // Convert to 32-bit integer
     }
-
     const absHash = Math.abs(hash);
     return 550 + (absHash % 301); // Range: 550 to 850
   };
@@ -47,17 +46,16 @@ function CreditScoreCheck() {
 
     const score = calculateCreditScore(panNumber);
     setCreditScore(score);
+    localStorage.setItem("hasCheckedCreditScore", "true");
+    localStorage.setItem("creditScore", score);
+    window.dispatchEvent(new Event("storage"));
     toast.success("Credit score calculated!");
   };
 
   return (
     <Box sx={{ py: 8 }}>
       <Container maxWidth="sm">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5 }}
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
           <Typography variant="h2" align="center" gutterBottom>
             Check Your Credit Score
           </Typography>
@@ -80,11 +78,7 @@ function CreditScoreCheck() {
           </Box>
 
           {creditScore !== null && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5 }}>
               <Box sx={{ mt: 4, textAlign: "center" }}>
                 <Typography variant="h4" gutterBottom>
                   Your Estimated Credit Score: {creditScore}
@@ -99,12 +93,7 @@ function CreditScoreCheck() {
                 </Typography>
 
                 {creditScore >= 600 && (
-                  <Button
-                    variant="outlined"
-                    component={Link}
-                    to="/apply-loan"
-                    sx={{ mt: 2 }}
-                  >
+                  <Button variant="outlined" component={Link} to="/apply-loan" sx={{ mt: 2 }}>
                     Apply for a Loan
                   </Button>
                 )}

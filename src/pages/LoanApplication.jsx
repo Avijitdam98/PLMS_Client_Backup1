@@ -81,12 +81,14 @@ const professions = [
 
 // Work-related loan purposes only, matching SBI's focus
 const loanPurposes = [
-  "Practice/Clinic Setup",
-  "Equipment Purchase",
-  "Working Capital",
-  "Office Renovation",
-  "Professional Development",
-  "Business Expansion",
+  "Home Renovation",
+  "Medical Emergency",
+  "Debt Consolidation",
+  "Travel or Vacation",
+  "Electronic Gadgets Purchase",
+  "Vehicle Down Payment",
+  "Children’s School Fees",
+  "Advance Rent or Deposit",
 ];
 
 // Tenure limited to 84 months max, as per SBI
